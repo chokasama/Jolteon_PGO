@@ -603,6 +603,7 @@ async def on_message(message):
         content,weather = parse_arg(input_str)
         msg_send = ''
         e = discord.Embed()
+        image_exist = False
 
         if content == '':
             msg_send="不知道呢 <:huaji:341240709405343745>"
@@ -638,9 +639,11 @@ async def on_message(message):
                 if ord('0')<=ord(type_d[0])<= ord('0')+mega_form[dex_num][1]:
                     msg_send,url_str = pokestat_mega(dex_num,ord(type_d[0])-ord('0'),weather)
                     e.set_image(url=url_str)
+                    image_exist = True
                 elif type_d == '-1' and dex_num == 384:
                     msg_send,url_str = pokestat(10,weather)
                     e.set_image(url=url_str)
+                    image_exist = True
                 else:
                     msg_send = "不知道呢 <:huaji:341240709405343745>"
             elif dex_num in diff_form:
@@ -660,6 +663,7 @@ async def on_message(message):
                 if ord('0')<=ord(type_d[0])<= ord('0')+diff_form[dex_num][1]:
                     msg_send,url_str = pokestat_diff(dex_num,ord(type_d[0])-ord('0'),weather)
                     e.set_image(url=url_str)
+                    image_exist = True
                 else:
                     msg_send = "不知道呢 <:huaji:341240709405343745>"
             elif dex_num in alola_form:
@@ -676,16 +680,21 @@ async def on_message(message):
                 if type_d[0] == '1':
                     msg_send,url_str = pokestat_alola(dex_num,weather)
                     e.set_image(url=url_str)
+                    image_exist = True
                 elif type_d[0] == '0':
                     msg_send,url_str = pokestat(dex_num,weather)
                     e.set_image(url=url_str)
+                    image_exist = True
                 else:
                     msg_send = "不知道呢 <:huaji:341240709405343745>"
             else:
                 msg_send,url_str = pokestat(dex_num,weather)
                 e.set_image(url=url_str)
-
-        await client.send_message(message.channel,msg_send,embed = e)
+                image_exist = True
+        if image_exist:
+            await client.send_message(message.channel,msg_send,embed = e)
+        else:
+            await client.send_message(message.channel,msg_send)
 
 
     elif message.content.startswith('hi jolteon'):
