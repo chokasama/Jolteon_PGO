@@ -735,6 +735,7 @@ async def on_message(message):
         scoreboard = {}
         # maximum rounds = 30
         while total < 30:
+            time.sleep(1.5)
             dex_num_ran = random.randint(1, 806)
             dex_str = "%03d"%dex_num_ran
             dex_str = 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/'+dex_str+'.png'
