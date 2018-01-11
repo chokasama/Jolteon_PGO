@@ -12,6 +12,7 @@ import string
 import random
 import time
 import functools
+import io
 from math import sqrt, pow, floor
 
 weather_boost = {   "extreme"       : [],
@@ -257,7 +258,7 @@ def movestr(dex_num, type_p, weather = 'extreme'):
 
 def pokestat_diff(dex_num, form_num, weather = 'extreme'):
     '''form the string consists of different form pokemon description'''
-    format = u'name: %s\n中文名: %s\ntype: %s\nbase hp: %s\nbase att: %s\nbase def: %s\nlv30maxcp: %d\n%slv40maxcp: %d\n孵蛋/raid 参考:\nlv20maxcp: %d\nlv20mincp: %d\n%s%s%s\n'
+    format = u'name: %s\n中文名: %s\ntype: %s\nbase hp: %s\nbase att: %s\nbase def: %s\nlv30maxcp: %d\n%slv40maxcp: %d\n孵蛋/raid 参考:\nlv20maxcp: %d\nlv20mincp: %d\n%s%s\n'
     format_25 = '**lv25maxcp: %d**\n**lv25mincp: %d**\n'
     if dex_num not in diff_form:
         return 'error'
@@ -310,12 +311,13 @@ def pokestat_diff(dex_num, form_num, weather = 'extreme'):
             lvl25_str = format_25%(maxcp_25,mincp_25)
             lvl35_str = '**lv35maxcp: %d**\n'%maxcp_35
         
-        return format %(name_en,name_ch,type_p,str(hp),str(atk),str(defence),maxcp_30,lvl35_str, maxcp_40,maxcp_20,mincp_20,lvl25_str,move_str,dex_str)
+        result = [format %(name_en,name_ch,type_p,str(hp),str(atk),str(defence),maxcp_30,lvl35_str, maxcp_40,maxcp_20,mincp_20,lvl25_str,move_str), dex_str]
+        return result
 
 
 def pokestat_mega(dex_num, form_num, weather = 'extreme'):
     '''form the string consists of mega pokemon description'''
-    format = u'name: %s\n中文名: %s\ntype: %s\nbase hp: %s\nbase att: %s\nbase def: %s\nlv30maxcp: %d\n%slv40maxcp: %d\n孵蛋/raid 参考:\nlv20maxcp: %d\nlv20mincp: %d\n%s%s%s\n'
+    format = u'name: %s\n中文名: %s\ntype: %s\nbase hp: %s\nbase att: %s\nbase def: %s\nlv30maxcp: %d\n%slv40maxcp: %d\n孵蛋/raid 参考:\nlv20maxcp: %d\nlv20mincp: %d\n%s%s\n'
     format_25 = '**lv25maxcp: %d**\n**lv25mincp: %d**\n'
     if dex_num not in mega_form:
         return 'error'
@@ -384,11 +386,13 @@ def pokestat_mega(dex_num, form_num, weather = 'extreme'):
             lvl25_str = format_25%(maxcp_25,mincp_25)
             lvl35_str = '**lv35maxcp: %d**\n'%maxcp_35
 
-        return format %(name_en,name_ch,type_p,str(hp),str(atk),str(defence),maxcp_30,lvl35_str, maxcp_40,maxcp_20,mincp_20,lvl25_str,move_str,dex_str)
+        result = [format %(name_en,name_ch,type_p,str(hp),str(atk),str(defence),maxcp_30,lvl35_str, maxcp_40,maxcp_20,mincp_20,lvl25_str,move_str), dex_str]
+        return result
+
 
 def pokestat_alola(dex_num, weather = 'extreme'):
     '''form the string consists of alola pokemon description'''
-    format = u'name: %s\n中文名: %s\ntype: %s\nbase hp: %s\nbase att: %s\nbase def: %s\nlv30maxcp: %d\n%slv40maxcp: %d\n孵蛋/raid 参考:\nlv20maxcp: %d\nlv20mincp: %d\n%s%s%s\n'
+    format = u'name: %s\n中文名: %s\ntype: %s\nbase hp: %s\nbase att: %s\nbase def: %s\nlv30maxcp: %d\n%slv40maxcp: %d\n孵蛋/raid 参考:\nlv20maxcp: %d\nlv20mincp: %d\n%s%s\n'
     format_25 = '**lv25maxcp: %d**\n**lv25mincp: %d**\n'
     if  dex_num not in alola_form:
         return "error"
@@ -437,13 +441,14 @@ def pokestat_alola(dex_num, weather = 'extreme'):
         if lvl_boost:
             lvl25_str = format_25%(maxcp_25,mincp_25)
             lvl35_str = '**lv35maxcp: %d**\n'%maxcp_35
-        return format %(name_en,name_ch,type_p,str(hp),str(atk),str(defence),maxcp_30,lvl35_str, maxcp_40,maxcp_20,mincp_20,lvl25_str,move_str,dex_str)
+        result = [format %(name_en,name_ch,type_p,str(hp),str(atk),str(defence),maxcp_30,lvl35_str, maxcp_40,maxcp_20,mincp_20,lvl25_str,move_str), dex_str]
+        return result
 
 
 
 def pokestat(dex_num, weather = 'extreme'):
     '''form the string consists of pokemon description'''
-    format = u'name: %s\n中文名: %s\ntype: %s\nbase hp: %s\nbase att: %s\nbase def: %s\nlv30maxcp: %d\n%slv40maxcp: %d\n孵蛋/raid 参考:\nlv20maxcp: %d\nlv20mincp: %d\n%s%s%s\n'
+    format = u'name: %s\n中文名: %s\ntype: %s\nbase hp: %s\nbase att: %s\nbase def: %s\nlv30maxcp: %d\n%slv40maxcp: %d\n孵蛋/raid 参考:\nlv20maxcp: %d\nlv20mincp: %d\n%s%s\n'
     format_25 = '**lv25maxcp: %d**\n**lv25mincp: %d**\n'
     if  dex_num>806:
         return "不知道呢 <:huaji:341240709405343745>"
@@ -497,7 +502,8 @@ def pokestat(dex_num, weather = 'extreme'):
         if lvl_boost:
             lvl25_str = format_25%(maxcp_25,mincp_25)
             lvl35_str = '**lv35maxcp: %d**\n'%maxcp_35
-        return format %(name_en,name_ch,type_p,str(hp),str(atk),str(defence),maxcp_30,lvl35_str, maxcp_40,maxcp_20,mincp_20,lvl25_str,move_str,dex_str)
+        result = [format %(name_en,name_ch,type_p,str(hp),str(atk),str(defence),maxcp_30,lvl35_str, maxcp_40,maxcp_20,mincp_20,lvl25_str,move_str), dex_str]
+        return result
 
 def movestat(move_number, flag='f', weather = 'extreme'):
     '''form the string consists of pokemon move description'''
@@ -591,9 +597,12 @@ async def on_message(message):
             await client.send_message(message.channel, '不许作弊呢～<:huaji:341240709405343745>')
             return
         
+
+        
         input_str=message.content[4:]
         content,weather = parse_arg(input_str)
         msg_send = ''
+        e = discord.Embed()
 
         if content == '':
             msg_send="不知道呢 <:huaji:341240709405343745>"
@@ -627,9 +636,11 @@ async def on_message(message):
                 type_d = msg.content[1:]
                 
                 if ord('0')<=ord(type_d[0])<= ord('0')+mega_form[dex_num][1]:
-                    msg_send = pokestat_mega(dex_num,ord(type_d[0])-ord('0'),weather)
+                    msg_send,url_str = pokestat_mega(dex_num,ord(type_d[0])-ord('0'),weather)
+                    e.set_image(url=url_str)
                 elif type_d == '-1' and dex_num == 384:
-                    msg_send = pokestat(10,weather)
+                    msg_send,url_str = pokestat(10,weather)
+                    e.set_image(url=url_str)
                 else:
                     msg_send = "不知道呢 <:huaji:341240709405343745>"
             elif dex_num in diff_form:
@@ -647,7 +658,8 @@ async def on_message(message):
                 type_d = msg.content[1:]
                 
                 if ord('0')<=ord(type_d[0])<= ord('0')+diff_form[dex_num][1]:
-                    msg_send = pokestat_diff(dex_num,ord(type_d[0])-ord('0'),weather)
+                    msg_send,url_str = pokestat_diff(dex_num,ord(type_d[0])-ord('0'),weather)
+                    e.set_image(url=url_str)
                 else:
                     msg_send = "不知道呢 <:huaji:341240709405343745>"
             elif dex_num in alola_form:
@@ -662,15 +674,18 @@ async def on_message(message):
                 type_d = msg.content[1:]
                 
                 if type_d[0] == '1':
-                    msg_send = pokestat_alola(dex_num,weather)
+                    msg_send,url_str = pokestat_alola(dex_num,weather)
+                    e.set_image(url=url_str)
                 elif type_d[0] == '0':
-                    msg_send = pokestat(dex_num,weather)
+                    msg_send,url_str = pokestat(dex_num,weather)
+                    e.set_image(url=url_str)
                 else:
                     msg_send = "不知道呢 <:huaji:341240709405343745>"
             else:
-                msg_send = pokestat(dex_num,weather)
+                msg_send,url_str = pokestat(dex_num,weather)
+                e.set_image(url=url_str)
 
-        await client.send_message(message.channel,msg_send)
+        await client.send_message(message.channel,msg_send,embed = e)
 
 
     elif message.content.startswith('hi jolteon'):
@@ -723,7 +738,9 @@ async def on_message(message):
             dex_num_ran = random.randint(1, 806)
             dex_str = "%03d"%dex_num_ran
             dex_str = 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/'+dex_str+'.png'
-            await client.send_message(message.channel,dex_str)
+            e = discord.Embed()
+            e.set_image(url=dex_str)
+            await client.send_message(message.channel,'猜猜我是谁?\n',embed = e)
             hint_str = '\_ '*len(str(df['chName'][dex_num_ran-1]))
             hint_str = hint_str[:-1]
             msg_hint = await client.send_message(message.channel,hint_str)
