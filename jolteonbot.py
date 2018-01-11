@@ -773,10 +773,10 @@ async def on_message(message):
                     if guess_1.strip().lower() == df['Name'][dex_num_ran-1].lower() or guess_1.strip().lower() == str(df['chName'][dex_num_ran-1]).lower() or guess_1.strip().lower() == str(df['offName'][dex_num_ran-1]).lower():
                         scoreboard.setdefault(guess.author,0)
                         scoreboard[guess.author] += 1
-                        await client.send_message(message.channel,'{0.author.mention} 答对了哦～'.format(guess)+'\n正确答案: '+df['Name'][dex_num_ran-1].title()+' '+df['chName'][dex_num_ran-1])
+                        await client.send_message(message.channel,'{0.author.mention} 答对了哦～'.format(guess)+'\n正确答案: '+df['Name'][dex_num_ran-1].title()+' '+df['chName'][dex_num_ran-1]+'\n')
                         break
             else:
-                await client.send_message(message.channel,'time up~\n正确答案: '+df['Name'][dex_num_ran-1].title()+' '+df['chName'][dex_num_ran-1])
+                await client.send_message(message.channel,'time up~\n正确答案: '+df['Name'][dex_num_ran-1].title()+' '+df['chName'][dex_num_ran-1]+'\n')
             # end the game when some player get 10 pts
             if scoreboard and max(scoreboard.values()) == 10:
                 scorestr = 'game over~\n'
