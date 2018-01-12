@@ -258,7 +258,7 @@ def movestr(dex_num, type_p, weather = 'extreme'):
 
 def pokestat_diff(dex_num, form_num, weather = 'extreme'):
     '''form the string consists of different form pokemon description'''
-    format = u'name: %s\n中文名: %s\ntype: %s\nbase hp: %s\nbase att: %s\nbase def: %s\nlv30maxcp: %d\n%slv40maxcp: %d\n孵蛋/raid 参考:\nlv20maxcp: %d\nlv20mincp: %d\n%s%s\n'
+    format_str = u'name: %s\n中文名: %s\ntype: %s\nbase hp: %s\nbase att: %s\nbase def: %s\nlv30maxcp: %d\n%slv40maxcp: %d\n孵蛋/raid 参考:\nlv20maxcp: %d\nlv20mincp: %d\n%s%s\n'
     format_25 = '**lv25maxcp: %d**\n**lv25mincp: %d**\n'
     error_exp = ['error','']
     if dex_num not in diff_form:
@@ -312,13 +312,13 @@ def pokestat_diff(dex_num, form_num, weather = 'extreme'):
             lvl25_str = format_25%(maxcp_25,mincp_25)
             lvl35_str = '**lv35maxcp: %d**\n'%maxcp_35
         
-        result = [format %(name_en,name_ch,type_p,str(hp),str(atk),str(defence),maxcp_30,lvl35_str, maxcp_40,maxcp_20,mincp_20,lvl25_str,move_str), dex_str]
+        result = [format_str %(name_en,name_ch,type_p,str(hp),str(atk),str(defence),maxcp_30,lvl35_str, maxcp_40,maxcp_20,mincp_20,lvl25_str,move_str), dex_str]
         return result
 
 
 def pokestat_mega(dex_num, form_num, weather = 'extreme'):
     '''form the string consists of mega pokemon description'''
-    format = u'name: %s\n中文名: %s\ntype: %s\nbase hp: %s\nbase att: %s\nbase def: %s\nlv30maxcp: %d\n%slv40maxcp: %d\n孵蛋/raid 参考:\nlv20maxcp: %d\nlv20mincp: %d\n%s%s\n'
+    format_str = u'name: %s\n中文名: %s\ntype: %s\nbase hp: %s\nbase att: %s\nbase def: %s\nlv30maxcp: %d\n%slv40maxcp: %d\n孵蛋/raid 参考:\nlv20maxcp: %d\nlv20mincp: %d\n%s%s\n'
     format_25 = '**lv25maxcp: %d**\n**lv25mincp: %d**\n'
     error_exp = ['error','']
     if dex_num not in mega_form:
@@ -388,13 +388,13 @@ def pokestat_mega(dex_num, form_num, weather = 'extreme'):
             lvl25_str = format_25%(maxcp_25,mincp_25)
             lvl35_str = '**lv35maxcp: %d**\n'%maxcp_35
 
-        result = [format %(name_en,name_ch,type_p,str(hp),str(atk),str(defence),maxcp_30,lvl35_str, maxcp_40,maxcp_20,mincp_20,lvl25_str,move_str), dex_str]
+        result = [format_str %(name_en,name_ch,type_p,str(hp),str(atk),str(defence),maxcp_30,lvl35_str, maxcp_40,maxcp_20,mincp_20,lvl25_str,move_str), dex_str]
         return result
 
 
 def pokestat_alola(dex_num, weather = 'extreme'):
     '''form the string consists of alola pokemon description'''
-    format = u'name: %s\n中文名: %s\ntype: %s\nbase hp: %s\nbase att: %s\nbase def: %s\nlv30maxcp: %d\n%slv40maxcp: %d\n孵蛋/raid 参考:\nlv20maxcp: %d\nlv20mincp: %d\n%s%s\n'
+    format_str = u'name: %s\n中文名: %s\ntype: %s\nbase hp: %s\nbase att: %s\nbase def: %s\nlv30maxcp: %d\n%slv40maxcp: %d\n孵蛋/raid 参考:\nlv20maxcp: %d\nlv20mincp: %d\n%s%s\n'
     format_25 = '**lv25maxcp: %d**\n**lv25mincp: %d**\n'
     error_exp = ['error','']
     if  dex_num not in alola_form:
@@ -444,14 +444,14 @@ def pokestat_alola(dex_num, weather = 'extreme'):
         if lvl_boost:
             lvl25_str = format_25%(maxcp_25,mincp_25)
             lvl35_str = '**lv35maxcp: %d**\n'%maxcp_35
-        result = [format %(name_en,name_ch,type_p,str(hp),str(atk),str(defence),maxcp_30,lvl35_str, maxcp_40,maxcp_20,mincp_20,lvl25_str,move_str), dex_str]
+        result = [format_str %(name_en,name_ch,type_p,str(hp),str(atk),str(defence),maxcp_30,lvl35_str, maxcp_40,maxcp_20,mincp_20,lvl25_str,move_str), dex_str]
         return result
 
 
 
 def pokestat(dex_num, weather = 'extreme'):
     '''form the string consists of pokemon description'''
-    format = u'name: %s\n中文名: %s\ntype: %s\nbase hp: %s\nbase att: %s\nbase def: %s\nlv30maxcp: %d\n%slv40maxcp: %d\n孵蛋/raid 参考:\nlv20maxcp: %d\nlv20mincp: %d\n%s%s\n'
+    format_str = u'name: %s\n中文名: %s\ntype: %s\nbase hp: %s\nbase att: %s\nbase def: %s\nlv30maxcp: %d\n%slv40maxcp: %d\n孵蛋/raid 参考:\nlv20maxcp: %d\nlv20mincp: %d\n%s%s\n'
     format_25 = '**lv25maxcp: %d**\n**lv25mincp: %d**\n'
     error_exp = ['不知道呢 <:huaji:341240709405343745>','']
     if  dex_num>806:
@@ -506,7 +506,7 @@ def pokestat(dex_num, weather = 'extreme'):
         if lvl_boost:
             lvl25_str = format_25%(maxcp_25,mincp_25)
             lvl35_str = '**lv35maxcp: %d**\n'%maxcp_35
-        result = [format %(name_en,name_ch,type_p,str(hp),str(atk),str(defence),maxcp_30,lvl35_str, maxcp_40,maxcp_20,mincp_20,lvl25_str,move_str), dex_str]
+        result = [format_str %(name_en,name_ch,type_p,str(hp),str(atk),str(defence),maxcp_30,lvl35_str, maxcp_40,maxcp_20,mincp_20,lvl25_str,move_str), dex_str]
         return result
 
 def movestat(move_number, flag='f', weather = 'extreme'):
@@ -516,12 +516,12 @@ def movestat(move_number, flag='f', weather = 'extreme'):
     
     if flag == 'c':
         data  = dfmc;
-        format = formatc
+        format_str = formatc
         eps = data['dpe'][move_number-1]
         time = data['time'][move_number-1]
     elif flag == 'f':
         data = dfmf;
-        format = formatf
+        format_str = formatf
         eps = data['eps'][move_number-1]
         time = str(data['time'][move_number-1])+'s'
     else:
@@ -544,7 +544,7 @@ def movestat(move_number, flag='f', weather = 'extreme'):
             epsdata = power/(-data['energy'][move_number-1])
             eps = '**%.2f**' % epsdata
     
-    return format%(name,type_1,boost_power,dps,eps,time)
+    return format_str % (name,type_1,boost_power,dps,eps,time)
 
 def parse_arg(argstr):
     if '+' in argstr:
@@ -777,7 +777,7 @@ async def on_message(message):
                             hint_str += '\_ '
                     await client.edit_message(msg_hint, hint_str)
                     edited = True
-                guess = await client.wait_for_message(timeout=2,channel = message.channel)
+                guess = await client.wait_for_message(timeout = 2,channel = message.channel)
                 if not guess:
                     continue
                 else:
