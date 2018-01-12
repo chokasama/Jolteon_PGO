@@ -260,10 +260,11 @@ def pokestat_diff(dex_num, form_num, weather = 'extreme'):
     '''form the string consists of different form pokemon description'''
     format = u'name: %s\n中文名: %s\ntype: %s\nbase hp: %s\nbase att: %s\nbase def: %s\nlv30maxcp: %d\n%slv40maxcp: %d\n孵蛋/raid 参考:\nlv20maxcp: %d\nlv20mincp: %d\n%s%s\n'
     format_25 = '**lv25maxcp: %d**\n**lv25mincp: %d**\n'
+    error_exp = ['error','']
     if dex_num not in diff_form:
-        return 'error'
+        return error_exp
     elif form_num >= diff_form[dex_num][1]:
-        return 'error'
+        return error_exp
     else:
         new_dex = diff_form[dex_num][0]+form_num
         hp = dfdiff['base hp'][new_dex]
@@ -319,10 +320,11 @@ def pokestat_mega(dex_num, form_num, weather = 'extreme'):
     '''form the string consists of mega pokemon description'''
     format = u'name: %s\n中文名: %s\ntype: %s\nbase hp: %s\nbase att: %s\nbase def: %s\nlv30maxcp: %d\n%slv40maxcp: %d\n孵蛋/raid 参考:\nlv20maxcp: %d\nlv20mincp: %d\n%s%s\n'
     format_25 = '**lv25maxcp: %d**\n**lv25mincp: %d**\n'
+    error_exp = ['error','']
     if dex_num not in mega_form:
-        return 'error'
+        return error_exp
     elif form_num > mega_form[dex_num][1]:
-        return 'error'
+        return error_exp
     elif form_num == 0:
         return pokestat(dex_num, weather)
     else:
@@ -394,8 +396,9 @@ def pokestat_alola(dex_num, weather = 'extreme'):
     '''form the string consists of alola pokemon description'''
     format = u'name: %s\n中文名: %s\ntype: %s\nbase hp: %s\nbase att: %s\nbase def: %s\nlv30maxcp: %d\n%slv40maxcp: %d\n孵蛋/raid 参考:\nlv20maxcp: %d\nlv20mincp: %d\n%s%s\n'
     format_25 = '**lv25maxcp: %d**\n**lv25mincp: %d**\n'
+    error_exp = ['error','']
     if  dex_num not in alola_form:
-        return "error"
+        return error_exp
     else:
         dex_num_new = alola_form.index(dex_num)
         hp = dfalola['base hp'][dex_num_new]
@@ -450,8 +453,9 @@ def pokestat(dex_num, weather = 'extreme'):
     '''form the string consists of pokemon description'''
     format = u'name: %s\n中文名: %s\ntype: %s\nbase hp: %s\nbase att: %s\nbase def: %s\nlv30maxcp: %d\n%slv40maxcp: %d\n孵蛋/raid 参考:\nlv20maxcp: %d\nlv20mincp: %d\n%s%s\n'
     format_25 = '**lv25maxcp: %d**\n**lv25mincp: %d**\n'
+    error_exp = ['不知道呢 <:huaji:341240709405343745>','']
     if  dex_num>806:
-        return "不知道呢 <:huaji:341240709405343745>"
+        return error_exp
     else:
         hp = df['base hp'][dex_num-1]
         atk = df['base attack'][dex_num-1]
@@ -689,8 +693,9 @@ async def on_message(message):
                     msg_send = "不知道呢 <:huaji:341240709405343745>"
             else:
                 msg_send,url_str = pokestat(dex_num,weather)
-                e.set_image(url=url_str)
-                image_exist = True
+                if url_str != '':
+                    e.set_image(url=url_str)
+                    image_exist = True
         if image_exist:
             await client.send_message(message.channel,msg_send,embed = e)
         else:
