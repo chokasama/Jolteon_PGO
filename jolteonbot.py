@@ -127,24 +127,24 @@ alola_form = [19,
               105]
 
 color_map = {
-    'normal':0xD1D1C4,
-    'fire':0xFF4500,
-    'water':0x1E90FF,
-    'grass':0x32CD32,
-    'electric':0xFFFF00,
-    'ice':0xAFEEEE,
-    'ghost':0x483D8B,
-    'poison':0x800080,
-    'dark':0x392A00,
-    'fighting':0xA52A2A,
-    'psychic':0xFF1493,
-    'fairy':0xFFB6C1,
-    'dragon':0x7B68EE,
-    'ground':0xDAA520,
-    'rock':0xDEB887,
-    'flying':0xB0C4DE,
-    'bug':0x9ACD32,
-    'steel':0xC0C0C0,
+    'normal'    : 0xD1D1C4,
+    'fire'      : 0xFF4500,
+    'water'     : 0x1E90FF,
+    'grass'     : 0x32CD32,
+    'electric'  : 0xFFFF00,
+    'ice'       : 0xAFEEEE,
+    'ghost'     : 0x483D8B,
+    'poison'    : 0x800080,
+    'dark'      : 0x392A00,
+    'fighting'  : 0xA52A2A,
+    'psychic'   : 0xFF1493,
+    'fairy'     : 0xFFB6C1,
+    'dragon'    : 0x7B68EE,
+    'ground'    : 0xDAA520,
+    'rock'      : 0xDEB887,
+    'flying'    : 0xB0C4DE,
+    'bug'       : 0x9ACD32,
+    'steel'     : 0xC0C0C0,
 }
 
 game_on = {}
@@ -870,5 +870,3 @@ async def on_message(message):
 
 
 client.run(tokenstr)
-
-
