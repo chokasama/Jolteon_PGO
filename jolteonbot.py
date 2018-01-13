@@ -126,27 +126,26 @@ alola_form = [19,
               103,
               105]
 
-color_map = [
-    'normal':0xC0C0C0,
+color_map = {
+    'normal':0xD1D1C4,
     'fire':0xFF4500,
     'water':0x1E90FF,
-    'grass':0x9ACD32,
+    'grass':0x32CD32,
     'electric':0xFFFF00,
     'ice':0xAFEEEE,
     'ghost':0x483D8B,
     'poison':0x800080,
-    'dark':0xC0C0C0,
-    'fighting':0xC0C0C0,
+    'dark':0x392A00,
+    'fighting':0xA52A2A,
     'psychic':0xFF1493,
-    'fairy':0xC0C0C0,
-    'dragon':0xC0C0C0,
-    'ground':0xC0C0C0,
-    'rock':0xC0C0C0,
-    'flying':0xC0C0C0,
-    'bug':0xC0C0C0,
+    'fairy':0xFFB6C1,
+    'dragon':0x7B68EE,
+    'ground':0xDAA520,
+    'rock':0xDEB887,
+    'flying':0xB0C4DE,
+    'bug':0x9ACD32,
     'steel':0xC0C0C0,
-
-]
+}
 
 game_on = {}
 
@@ -225,7 +224,7 @@ def movestr(dex_num, type_p, weather = 'extreme'):
     charge_moves_str = 'charge move(DPS): '
     legacy_fast_str = 'legacy fast(DPS): '
     legacy_charge_str ='legacy charge(DPS): '
-    
+
     for move in fast_moves:
         move = move.strip()
         if move!='':
@@ -283,7 +282,7 @@ def pokestat_diff(dex_num, form_num, weather = 'extreme'):
     '''form the string consists of different form pokemon description'''
     format_str = u'name: %s\n中文名: %s\ntype: %s\nbase hp: %s\nbase att: %s\nbase def: %s\nlv30maxcp: %d\n%slv40maxcp: %d\n孵蛋/raid 参考:\nlv20maxcp: %d\nlv20mincp: %d\n%s%s\n'
     format_25 = '**lv25maxcp: %d**\n**lv25mincp: %d**\n'
-    error_exp = ['error','']
+    error_exp = ['error','',0]
     if dex_num not in diff_form:
         return error_exp
     elif form_num >= diff_form[dex_num][1]:
@@ -297,6 +296,7 @@ def pokestat_diff(dex_num, form_num, weather = 'extreme'):
         
         type_p_new = ''
         lvl_boost = False
+        color = 0
         # weather boosted type formatting
         for type_1 in type_p:
             if type_1.strip().lower() != '':
@@ -305,6 +305,8 @@ def pokestat_diff(dex_num, form_num, weather = 'extreme'):
                     lvl_boost = True
                 else:
                     type_p_new += type_1.strip().title()+' '
+                if color == 0:
+                    color = color_map[type_1.strip().lower()]
             else: pass
         type_p = type_p_new
         
@@ -335,7 +337,7 @@ def pokestat_diff(dex_num, form_num, weather = 'extreme'):
             lvl25_str = format_25%(maxcp_25,mincp_25)
             lvl35_str = '**lv35maxcp: %d**\n'%maxcp_35
         
-        result = [format_str %(name_en,name_ch,type_p,str(hp),str(atk),str(defence),maxcp_30,lvl35_str, maxcp_40,maxcp_20,mincp_20,lvl25_str,move_str), dex_str]
+        result = [format_str %(name_en,name_ch,type_p,str(hp),str(atk),str(defence),maxcp_30,lvl35_str, maxcp_40,maxcp_20,mincp_20,lvl25_str,move_str), dex_str, color]
         return result
 
 
@@ -343,7 +345,7 @@ def pokestat_mega(dex_num, form_num, weather = 'extreme'):
     '''form the string consists of mega pokemon description'''
     format_str = u'name: %s\n中文名: %s\ntype: %s\nbase hp: %s\nbase att: %s\nbase def: %s\nlv30maxcp: %d\n%slv40maxcp: %d\n孵蛋/raid 参考:\nlv20maxcp: %d\nlv20mincp: %d\n%s%s\n'
     format_25 = '**lv25maxcp: %d**\n**lv25mincp: %d**\n'
-    error_exp = ['error','']
+    error_exp = ['error','',0]
     if dex_num not in mega_form:
         return error_exp
     elif form_num > mega_form[dex_num][1]:
@@ -364,6 +366,7 @@ def pokestat_mega(dex_num, form_num, weather = 'extreme'):
         
         type_p_new = ''
         lvl_boost = False
+        color = 0
         # weather boosted type formatting
         for type_1 in type_p:
             
@@ -373,6 +376,8 @@ def pokestat_mega(dex_num, form_num, weather = 'extreme'):
                     lvl_boost = True
                 else:
                     type_p_new += type_1.strip().title()+' '
+                if color == 0:
+                    color = color_map[type_1.strip().lower()]
             else: pass
         type_p = type_p_new
         
@@ -411,7 +416,7 @@ def pokestat_mega(dex_num, form_num, weather = 'extreme'):
             lvl25_str = format_25%(maxcp_25,mincp_25)
             lvl35_str = '**lv35maxcp: %d**\n'%maxcp_35
 
-        result = [format_str %(name_en,name_ch,type_p,str(hp),str(atk),str(defence),maxcp_30,lvl35_str, maxcp_40,maxcp_20,mincp_20,lvl25_str,move_str), dex_str]
+        result = [format_str %(name_en,name_ch,type_p,str(hp),str(atk),str(defence),maxcp_30,lvl35_str, maxcp_40,maxcp_20,mincp_20,lvl25_str,move_str), dex_str, color]
         return result
 
 
@@ -419,7 +424,7 @@ def pokestat_alola(dex_num, weather = 'extreme'):
     '''form the string consists of alola pokemon description'''
     format_str = u'name: %s\n中文名: %s\ntype: %s\nbase hp: %s\nbase att: %s\nbase def: %s\nlv30maxcp: %d\n%slv40maxcp: %d\n孵蛋/raid 参考:\nlv20maxcp: %d\nlv20mincp: %d\n%s%s\n'
     format_25 = '**lv25maxcp: %d**\n**lv25mincp: %d**\n'
-    error_exp = ['error','']
+    error_exp = ['error','',0]
     if  dex_num not in alola_form:
         return error_exp
     else:
@@ -430,6 +435,7 @@ def pokestat_alola(dex_num, weather = 'extreme'):
         type_p = dfalola['type'][dex_num_new].split()
         type_p_new = ''
         lvl_boost = False
+        color = 0
         # weather boosted type formatting
         for type_1 in type_p:
             if type_1.strip().lower() != '':
@@ -438,6 +444,8 @@ def pokestat_alola(dex_num, weather = 'extreme'):
                     lvl_boost = True
                 else:
                     type_p_new += type_1.strip().title()+' '
+                if color == 0:
+                    color = color_map[type_1.strip().lower()]
             else: pass
         type_p = type_p_new
         # cp calculation
@@ -467,7 +475,7 @@ def pokestat_alola(dex_num, weather = 'extreme'):
         if lvl_boost:
             lvl25_str = format_25%(maxcp_25,mincp_25)
             lvl35_str = '**lv35maxcp: %d**\n'%maxcp_35
-        result = [format_str %(name_en,name_ch,type_p,str(hp),str(atk),str(defence),maxcp_30,lvl35_str, maxcp_40,maxcp_20,mincp_20,lvl25_str,move_str), dex_str]
+        result = [format_str %(name_en,name_ch,type_p,str(hp),str(atk),str(defence),maxcp_30,lvl35_str, maxcp_40,maxcp_20,mincp_20,lvl25_str,move_str), dex_str, color]
         return result
 
 
@@ -476,7 +484,7 @@ def pokestat(dex_num, weather = 'extreme'):
     '''form the string consists of pokemon description'''
     format_str = u'name: %s\n中文名: %s\ntype: %s\nbase hp: %s\nbase att: %s\nbase def: %s\nlv30maxcp: %d\n%slv40maxcp: %d\n孵蛋/raid 参考:\nlv20maxcp: %d\nlv20mincp: %d\n%s%s\n'
     format_25 = '**lv25maxcp: %d**\n**lv25mincp: %d**\n'
-    error_exp = ['不知道呢 <:huaji:341240709405343745>','']
+    error_exp = ['不知道呢 <:huaji:341240709405343745>','',0]
     if  dex_num>806:
         return error_exp
     else:
@@ -486,6 +494,7 @@ def pokestat(dex_num, weather = 'extreme'):
         type_p = df['type'][dex_num-1].split()
         type_p_new = ''
         lvl_boost = False
+        color = 0
         #weather boosted type formatting
         for type_1 in type_p:
             
@@ -495,6 +504,8 @@ def pokestat(dex_num, weather = 'extreme'):
                     lvl_boost = True
                 else:
                     type_p_new += type_1.strip().title()+' '
+                if color == 0:
+                    color = color_map[type_1.strip().lower()]
             else: pass
         type_p = type_p_new
         # cp calculation
@@ -529,7 +540,7 @@ def pokestat(dex_num, weather = 'extreme'):
         if lvl_boost:
             lvl25_str = format_25%(maxcp_25,mincp_25)
             lvl35_str = '**lv35maxcp: %d**\n'%maxcp_35
-        result = [format_str %(name_en,name_ch,type_p,str(hp),str(atk),str(defence),maxcp_30,lvl35_str, maxcp_40,maxcp_20,mincp_20,lvl25_str,move_str), dex_str]
+        result = [format_str %(name_en,name_ch,type_p,str(hp),str(atk),str(defence),maxcp_30,lvl35_str, maxcp_40,maxcp_20,mincp_20,lvl25_str,move_str), dex_str, color]
         return result
 
 def movestat(move_number, flag='f', weather = 'extreme'):
@@ -629,7 +640,6 @@ async def on_message(message):
         input_str=message.content[4:]
         content,weather = parse_arg(input_str)
         msg_send = ''
-        e = discord.Embed()
         image_exist = False
 
         if content == '':
@@ -666,11 +676,13 @@ async def on_message(message):
                 if type_d == '':
                     msg_send = "不知道呢 <:huaji:341240709405343745>"
                 elif ord('0')<=ord(type_d[0])<= ord('0')+mega_form[dex_num][1]:
-                    msg_send,url_str = pokestat_mega(dex_num,ord(type_d[0])-ord('0'),weather)
+                    msg_send,url_str,color = pokestat_mega(dex_num,ord(type_d[0])-ord('0'),weather)
+                    e = discord.Embed(colour = color)
                     e.set_image(url=url_str)
                     image_exist = True
                 elif type_d == '-1' and dex_num == 384:
-                    msg_send,url_str = pokestat(10,weather)
+                    msg_send,url_str,color = pokestat(10,weather)
+                    e = discord.Embed(colour = color)
                     e.set_image(url=url_str)
                     image_exist = True
                 else:
@@ -692,7 +704,8 @@ async def on_message(message):
                 if type_d == '':
                     msg_send = "不知道呢 <:huaji:341240709405343745>"
                 elif ord('0')<=ord(type_d[0])<= ord('0')+diff_form[dex_num][1]:
-                    msg_send,url_str = pokestat_diff(dex_num,ord(type_d[0])-ord('0'),weather)
+                    msg_send,url_str,color = pokestat_diff(dex_num,ord(type_d[0])-ord('0'),weather)
+                    e = discord.Embed(colour = color)
                     e.set_image(url=url_str)
                     image_exist = True
                 else:
@@ -711,18 +724,21 @@ async def on_message(message):
                 if type_d == '':
                     msg_send = "不知道呢 <:huaji:341240709405343745>"
                 elif type_d[0] == '1':
-                    msg_send,url_str = pokestat_alola(dex_num,weather)
+                    msg_send,url_str,color = pokestat_alola(dex_num,weather)
+                    e = discord.Embed(colour = color)
                     e.set_image(url=url_str)
                     image_exist = True
                 elif type_d[0] == '0':
-                    msg_send,url_str = pokestat(dex_num,weather)
+                    msg_send,url_str,color = pokestat(dex_num,weather)
+                    e = discord.Embed(colour = color)
                     e.set_image(url=url_str)
                     image_exist = True
                 else:
                     msg_send = "不知道呢 <:huaji:341240709405343745>"
             else:
-                msg_send,url_str = pokestat(dex_num,weather)
+                msg_send,url_str,color = pokestat(dex_num,weather)
                 if url_str != '':
+                    e = discord.Embed(colour = color)
                     e.set_image(url=url_str)
                     image_exist = True
         if image_exist:
