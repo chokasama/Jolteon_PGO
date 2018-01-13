@@ -6,11 +6,9 @@
 import discord
 import asyncio
 import pandas
-import string
 import random
 import time
 import functools
-import io
 from math import sqrt, pow, floor
 
 weather_boost = {   "extreme"       : [],
