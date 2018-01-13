@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 #################################################
 #if there is any problem, don't tell me QAQ     #
 #                       --chokasama             #
