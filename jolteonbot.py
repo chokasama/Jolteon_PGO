@@ -125,6 +125,29 @@ alola_form = [19,
               89,
               103,
               105]
+
+color_map = [
+    'normal':0xC0C0C0,
+    'fire':0xFF4500,
+    'water':0x1E90FF,
+    'grass':0x9ACD32,
+    'electric':0xFFFF00,
+    'ice':0xAFEEEE,
+    'ghost':0x483D8B,
+    'poison':0x800080,
+    'dark':0xC0C0C0,
+    'fighting':0xC0C0C0,
+    'psychic':0xFF1493,
+    'fairy':0xC0C0C0,
+    'dragon':0xC0C0C0,
+    'ground':0xC0C0C0,
+    'rock':0xC0C0C0,
+    'flying':0xC0C0C0,
+    'bug':0xC0C0C0,
+    'steel':0xC0C0C0,
+
+]
+
 game_on = {}
 
 dfmc = pandas.read_excel('charge_moves.xlsx')
@@ -640,7 +663,9 @@ async def on_message(message):
                     return
                 type_d = msg.content[1:]
                 
-                if ord('0')<=ord(type_d[0])<= ord('0')+mega_form[dex_num][1]:
+                if type_d == '':
+                    msg_send = "不知道呢 <:huaji:341240709405343745>"
+                elif ord('0')<=ord(type_d[0])<= ord('0')+mega_form[dex_num][1]:
                     msg_send,url_str = pokestat_mega(dex_num,ord(type_d[0])-ord('0'),weather)
                     e.set_image(url=url_str)
                     image_exist = True
@@ -663,8 +688,10 @@ async def on_message(message):
                     await client.send_message(message.channel,'不理我？不理你了哦～')
                     return
                 type_d = msg.content[1:]
-                
-                if ord('0')<=ord(type_d[0])<= ord('0')+diff_form[dex_num][1]:
+
+                if type_d == '':
+                    msg_send = "不知道呢 <:huaji:341240709405343745>"
+                elif ord('0')<=ord(type_d[0])<= ord('0')+diff_form[dex_num][1]:
                     msg_send,url_str = pokestat_diff(dex_num,ord(type_d[0])-ord('0'),weather)
                     e.set_image(url=url_str)
                     image_exist = True
@@ -680,8 +707,10 @@ async def on_message(message):
                     return
 
                 type_d = msg.content[1:]
-                
-                if type_d[0] == '1':
+
+                if type_d == '':
+                    msg_send = "不知道呢 <:huaji:341240709405343745>"
+                elif type_d[0] == '1':
                     msg_send,url_str = pokestat_alola(dex_num,weather)
                     e.set_image(url=url_str)
                     image_exist = True
@@ -753,12 +782,12 @@ async def on_message(message):
             dex_num_ran = random.randint(1, 806)
             dex_str = "%03d"%dex_num_ran
             dex_str = 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/'+dex_str+'.png'
-            e = discord.Embed()
-            e.set_image(url=dex_str)
-            await client.send_message(message.channel,'猜猜我是谁?\n',embed = e)
-            hint_str = '\_ '*len(str(df['chName'][dex_num_ran-1]))
+            hint_str = '_ '*len(str(df['chName'][dex_num_ran-1]))
             hint_str = hint_str[:-1]
-            msg_hint = await client.send_message(message.channel,hint_str)
+            e = discord.Embed(title='猜猜我是谁?',colour=0x20DF80)
+            e.set_image(url=dex_str)
+            e.set_footer(text = hint_str)
+            msg_quiz = await client.send_message(message.channel, embed = e)
             start_time = time.time()
             now_time = start_time
             edited = False
@@ -774,8 +803,9 @@ async def on_message(message):
                         if i%3 == 1:
                             hint_str += str(df['chName'][dex_num_ran-1])[i]+' '
                         else:
-                            hint_str += '\_ '
-                    await client.edit_message(msg_hint, hint_str)
+                            hint_str += '_ '
+                    e.set_footer(text = hint_str)
+                    await client.edit_message(msg_quiz, embed = e)
                     edited = True
                 guess = await client.wait_for_message(timeout = 2,channel = message.channel)
                 if not guess:
@@ -788,21 +818,23 @@ async def on_message(message):
                     if guess_1.strip().lower() == df['Name'][dex_num_ran-1].lower() or guess_1.strip().lower() == str(df['chName'][dex_num_ran-1]).lower() or guess_1.strip().lower() == str(df['offName'][dex_num_ran-1]).lower():
                         scoreboard.setdefault(guess.author,0)
                         scoreboard[guess.author] += 1
-                        await client.send_message(message.channel,'{0.author.mention} 答对了哦～'.format(guess)+'\n正确答案: '+df['Name'][dex_num_ran-1].title()+' '+df['chName'][dex_num_ran-1]+'\n')
+                        e_corr = discord.Embed(title=guess.author.name+' 答对了哦～', description ='\n正确答案: '+df['Name'][dex_num_ran-1].title()+' '+df['chName'][dex_num_ran-1]+'\n',colour=0x20DF80)
+                        await client.send_message(message.channel,embed = e_corr)
                         break
             else:
-                await client.send_message(message.channel,'time up~\n正确答案: '+df['Name'][dex_num_ran-1].title()+' '+df['chName'][dex_num_ran-1]+'\n')
+                e_wrong = discord.Embed(title='time up~', description ='\n正确答案: '+df['Name'][dex_num_ran-1].title()+' '+df['chName'][dex_num_ran-1]+'\n',colour=0xFF6347)
+                await client.send_message(message.channel,embed = e_wrong)
             # end the game when some player get 10 pts
             if scoreboard and max(scoreboard.values()) == 10:
-                scorestr = 'game over~\n'
+                score_title = 'game over~\n'
                 break
             # end the game when '$quit' shows up
             elif quit_game:
-                scorestr = '游戏中止\n'
+                score_title = '游戏中止\n'
                 break
             total += 1
         else:
-            scorestr = 'game over~\n'
+            score_title = 'game over~\n'
         # compare function for ordering scoreboard
         def user_compare(user_1,user_2):
             if scoreboard[user_1]>scoreboard[user_2]:
@@ -813,9 +845,11 @@ async def on_message(message):
                 return 0
         users = list(scoreboard.keys())
         users.sort(key=functools.cmp_to_key(user_compare))
+        scorestr = ''
         for user in users:
             scorestr += user.name+': '+str(scoreboard[user])+'\n'
-        await client.send_message(message.channel,scorestr)
+        e_score = discord.Embed(title=score_title, description =scorestr,colour=0x20DF80)
+        await client.send_message(message.channel,embed = e_score)
         game_on[message.channel] = False
 
 
