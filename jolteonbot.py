@@ -793,11 +793,14 @@ async def on_message(message):
             time.sleep(1.5)
             dex_num_ran = random.randint(1, 806)
             dex_str = "%03d"%dex_num_ran
+            # send the picture first to get an url for it
+            m_tmp = await client.send_file(message.channel, 'out/'+dex_str+'.png')
+            await client.delete_message(m_tmp)
             dex_str = 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/'+dex_str+'.png'
             hint_str = '_ '*len(str(df['chName'][dex_num_ran-1]))
             hint_str = hint_str[:-1]
             e = discord.Embed(title='猜猜我是谁?',colour=0x20DF80)
-            e.set_image(url=dex_str)
+            e.set_image(url=m_tmp.attachments[0]['url'])
             e.set_footer(text = hint_str)
             msg_quiz = await client.send_message(message.channel, embed = e)
             start_time = time.time()
@@ -830,11 +833,15 @@ async def on_message(message):
                     if guess_1.strip().lower() == df['Name'][dex_num_ran-1].lower() or guess_1.strip().lower() == str(df['chName'][dex_num_ran-1]).lower() or guess_1.strip().lower() == str(df['offName'][dex_num_ran-1]).lower():
                         scoreboard.setdefault(guess.author,0)
                         scoreboard[guess.author] += 1
-                        e_corr = discord.Embed(title=guess.author.name+' 答对了哦～', description ='\n正确答案: '+df['Name'][dex_num_ran-1].title()+' '+df['chName'][dex_num_ran-1]+'\n',colour=0x20DF80)
+                        e_corr = discord.Embed(title=guess.author.name+' 答对了哦～', description ='正确答案:',colour=0x20DF80)
+                        e_corr.set_image(url = dex_str)
+                        e_corr.set_footer(text = df['Name'][dex_num_ran-1].title()+' '+df['chName'][dex_num_ran-1]+'\n')
                         await client.send_message(message.channel,embed = e_corr)
                         break
             else:
-                e_wrong = discord.Embed(title='time up~', description ='\n正确答案: '+df['Name'][dex_num_ran-1].title()+' '+df['chName'][dex_num_ran-1]+'\n',colour=0xFF6347)
+                e_wrong = discord.Embed(title='time up~', description ='正确答案:',colour=0xFF6347)
+                e_wrong.set_image(url = dex_str)
+                e_wrong.set_footer(text = df['Name'][dex_num_ran-1].title()+' '+df['chName'][dex_num_ran-1]+'\n')
                 await client.send_message(message.channel,embed = e_wrong)
             # end the game when some player get 10 pts
             if scoreboard and max(scoreboard.values()) == 10:
