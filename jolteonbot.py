@@ -772,13 +772,13 @@ async def on_message(message):
         # help
         input_str = message.content[2:]
         if input_str.strip() == '':
-            await client.send_message(message.channel,"输入\"$pg 宝可梦名称/编号\"查询pgo中宝可梦的(预测)数据\n输入\"$pgm 技能名称\"查询pgo中技能的数据\n输入\"$game\"看看有什么奇怪的事情发生:see_no_evil:")
+            await client.send_message(message.channel,"输入\"$pg 宝可梦名称/编号\"查询pgo中宝可梦的(预测)数据\n输入\"$pgm 技能名称\"查询pgo中技能的数据\n输入\"$game\"\/\"$game v2\"看看有什么奇怪的事情发生:see_no_evil:")
         elif input_str.strip().lower() == 'pg':
             await client.send_message(message.channel,"输入\"$pg 宝可梦名称/编号(+天气)\"查询pgo中宝可梦的(预测)数据,名称可用中英文,天气可省略或使用英文天气")
         elif input_str.strip().lower() == 'pgm':
             await client.send_message(message.channel,"输入\"$pgm 技能名称/编号(+天气)\"查询pgo中技能数据,名称仅限英文,天气可省略或使用英文天气")
         elif input_str.strip().lower() == 'game':
-            await client.send_message(message.channel,"输入\"$game\"开始辣鸡的我是谁游戏,游戏中不能作弊哦～\n输入\"$quit\"结束当前游戏")
+            await client.send_message(message.channel,"输入\"$game\"开始辣鸡的我是谁游戏,游戏中不能作弊哦～\n输入\"$game v2\"开始进阶版的我是谁游戏\n输入\"$quit\"结束当前游戏")
 
     elif message.content.startswith('$game'):
         flag = False
