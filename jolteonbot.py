@@ -780,7 +780,10 @@ async def on_message(message):
         elif input_str.strip().lower() == 'game':
             await client.send_message(message.channel,"输入\"$game\"开始辣鸡的我是谁游戏,游戏中不能作弊哦～\n输入\"$quit\"结束当前游戏")
 
-    elif message.content.startswith('$testgame'):
+    elif message.content.startswith('$game'):
+        flag = False
+        if message.content[5:] == ' v2':
+            flag = True
         # who am i game
         if game_on.setdefault(message.channel,False):
             await client.send_message(message.channel,'游戏已开始，请先输入"$quit"结束已有游戏再开始新游戏')
@@ -793,17 +796,24 @@ async def on_message(message):
             time.sleep(1.5)
             dex_num_ran = random.randint(1, 806)
             dex_str = "%03d"%dex_num_ran
-            # send the picture first to get an url for it
-            m_tmp = await client.send_file(message.channel, 'out/'+dex_str+'.png')
+            
+            if flag:
+                # send the picture first to get an url for it
+                m_tmp = await client.send_file(message.channel, 'out/'+dex_str+'.png')
+            
             dex_str = 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/'+dex_str+'.png'
             hint_str = '_ '*len(str(df['chName'][dex_num_ran-1]))
             hint_str = hint_str[:-1]
             e = discord.Embed(title='猜猜我是谁?',colour=0x20DF80)
-            e.set_image(url=m_tmp.attachments[0]['url'])
+            if flag:
+                e.set_image(url=m_tmp.attachments[0]['url'])
+            else:
+                e.set_image(url=dex_str)
             e.set_footer(text = hint_str)
             msg_quiz = await client.send_message(message.channel, embed = e)
             # time.sleep(0.2)
-            await client.delete_message(m_tmp)
+            if flag:
+                await client.delete_message(m_tmp)
             start_time = time.time()
             now_time = start_time
             edited = False
