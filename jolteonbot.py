@@ -782,7 +782,7 @@ async def on_message(message):
 
     elif message.content.startswith('$game'):
         flag = False
-        if message.content[5:] == ' v2':
+        if message.content[9:] == ' v2':
             flag = True
         # who am i game
         if game_on.setdefault(message.channel,False):
@@ -795,25 +795,16 @@ async def on_message(message):
         while total < 30:
             time.sleep(1.5)
             dex_num_ran = random.randint(1, 806)
-            dex_str = "%03d"%dex_num_ran
-            
-            if flag:
-                # send the picture first to get an url for it
-                m_tmp = await client.send_file(message.channel, 'out/'+dex_str+'.png')
-            
-            dex_str = 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/'+dex_str+'.png'
+            dex_str = "%03d"%dex_num_ran + 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/'+dex_str+'.png'
             hint_str = '_ '*len(str(df['chName'][dex_num_ran-1]))
             hint_str = hint_str[:-1]
             e = discord.Embed(title='猜猜我是谁?',colour=0x20DF80)
             if flag:
-                e.set_image(url=m_tmp.attachments[0]['url'])
+                e.set_image(url='https://raw.githubusercontent.com/chokasama/Jolteon_PGO/master/out/'+ "%03d"%dex_num_ran + '.png')
             else:
                 e.set_image(url=dex_str)
             e.set_footer(text = hint_str)
             msg_quiz = await client.send_message(message.channel, embed = e)
-            # time.sleep(0.2)
-            if flag:
-                await client.delete_message(m_tmp)
             start_time = time.time()
             now_time = start_time
             edited = False
