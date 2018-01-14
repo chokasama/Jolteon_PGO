@@ -795,7 +795,7 @@ async def on_message(message):
         while total < 30:
             time.sleep(1.5)
             dex_num_ran = random.randint(1, 806)
-            dex_str = "%03d"%dex_num_ran + 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/'+dex_str+'.png'
+            dex_str =  'https://assets.pokemon.com/assets/cms2/img/pokedex/full/'+ "%03d"%dex_num_ran +'.png'
             hint_str = '_ '*len(str(df['chName'][dex_num_ran-1]))
             hint_str = hint_str[:-1]
             e = discord.Embed(title='猜猜我是谁?',colour=0x20DF80)
