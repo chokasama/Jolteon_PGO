@@ -782,7 +782,7 @@ async def on_message(message):
 
     elif message.content.startswith('$game'):
         flag = False
-        if message.content[9:] == ' v2':
+        if message.content[5:] == ' v2':
             flag = True
         # who am i game
         if game_on.setdefault(message.channel,False):
