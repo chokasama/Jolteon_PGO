@@ -9,6 +9,7 @@ import pandas
 import random
 import time
 import functools
+import getopt
 from math import sqrt, pow, floor
 
 weather_boost = {   "extreme"       : [],
@@ -142,6 +143,8 @@ color_map = {
     'bug'       : 0x9ACD32,
     'steel'     : 0xC0C0C0,
 }
+
+gen_range = [151,251,386,493,649,721,806]
 
 game_on = {}
 
@@ -601,6 +604,72 @@ def parse_arg(argstr):
     result = [content,weather]
     return result
 
+def parse_game_opt(optstr):
+    error_exp = {'msg':'error','en':False,'ch':False,'gen':7,'simple':False}
+    opts = optstr.split()
+    try:
+        optslist, args = getopt.getopt(opts, "ecg:s", ["english", "chinese","gen=","simple"])
+    except getopt.GetoptError as err:
+        return error_exp
+    result = {'msg':'passed','en':False,'ch':False,'gen':7,'simple':False}
+    for o, a in optslist:
+        if o in ("-e", "--english"):
+            result['en'] = True
+        elif o in ("-c", "--chinese"):
+            result['ch'] = True
+        elif o in ("-s", "--simple"):
+            result['simple'] = True
+        elif o in ("-g", "--gen"):
+            if a.isdigit() and 1<=int(a)<=7:
+                result['gen'] = int(a)
+            else:
+                return error_exp
+        else:
+            return error_exp
+    return result
+
+def hint_str_init(dex_num, optch, opten):
+    if opten and not optch:
+        return '_ '*len(str(df['Name'][dex_num-1]))
+    else:
+        return '_ '*len(str(df['chName'][dex_num-1]))
+
+def hint_str_update(dex_num, optch, opten):
+    if opten and not optch:
+        hint_str = ''
+        for i in range(len(str(df['Name'][dex_num-1]))):
+            # give hint on every three characters
+            if i%3 == 1:
+                hint_str += str(df['Name'][dex_num-1])[i]+' '
+            else:
+                hint_str += '_ '
+        return hint_str
+    else:
+        hint_str = ''
+        for i in range(len(str(df['chName'][dex_num-1]))):
+            # give hint on every three characters
+            if i%3 == 1:
+                hint_str += str(df['chName'][dex_num-1])[i]+' '
+            else:
+                hint_str += '_ '
+        return hint_str
+
+def check_answer(answer, dex_num, optch, opten):
+    if (optch and opten) or not (optch or opten):
+        return answer.strip().lower() == df['Name'][dex_num-1].lower() or answer.strip().lower() == str(df['chName'][dex_num-1]).lower() or answer.strip().lower() == str(df['offName'][dex_num-1]).lower()
+    elif optch:
+        return answer.strip().lower() == str(df['chName'][dex_num-1]).lower() or answer.strip().lower() == str(df['offName'][dex_num-1]).lower()
+    else:
+        return answer.strip().lower() == df['Name'][dex_num-1].lower()
+
+def answer_str(dex_num, optch, opten):
+    if (optch and opten) or not (optch or opten):
+        return df['Name'][dex_num-1].title()+' '+df['chName'][dex_num-1]
+    elif optch:
+        return df['chName'][dex_num-1]
+    else:
+        return df['Name'][dex_num-1].title()
+
 
 #main program start
 
@@ -781,28 +850,31 @@ async def on_message(message):
             await client.send_message(message.channel,"输入\"$game\"开始辣鸡的我是谁游戏,游戏中不能作弊哦～\n输入\"$game v2\"开始进阶版的我是谁游戏\n输入\"$quit\"结束当前游戏")
 
     elif message.content.startswith('$game'):
-        flag = False
-        if message.content[5:] == ' v2':
-            flag = True
         # who am i game
         if game_on.setdefault(message.channel,False):
             await client.send_message(message.channel,'游戏已开始，请先输入"$quit"结束已有游戏再开始新游戏')
             return
         game_on[message.channel] = True
+        
+        optmap = parse_game_opt(message.content[5:])
+        if optmap['msg'] == 'error':
+            await client.send_message(message.channel,"错误的选项：\n`-e/--english`: 选择英文版\n`-c/--chinese`: 选择中文版\n`-g/--gen`: 选择题目范围\n`-s/--simple`: 选择以彩图开始游戏")
+            game_on[message.channel] = False
+            return
+
         total = 0
         scoreboard = {}
         # maximum rounds = 30
         while total < 30:
-            time.sleep(1.5)
-            dex_num_ran = random.randint(1, 806)
-            dex_str =  'https://assets.pokemon.com/assets/cms2/img/pokedex/full/'+ "%03d"%dex_num_ran +'.png'
-            hint_str = '_ '*len(str(df['chName'][dex_num_ran-1]))
-            hint_str = hint_str[:-1]
-            e = discord.Embed(title='猜猜我是谁?',colour=0x20DF80)
-            if flag:
-                e.set_image(url='https://raw.githubusercontent.com/chokasama/Jolteon_PGO/master/out/'+ "%03d"%dex_num_ran + '.png')
+            time.sleep(2)
+            dex_num_ran = random.randint(1, gen_range[optmap['gen']-1])
+            if  optmap['simple']:
+                image_url = 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/'+ "%03d"%dex_num_ran +'.png'
             else:
-                e.set_image(url=dex_str)
+                image_url = 'https://raw.githubusercontent.com/chokasama/Jolteon_PGO/master/out/'+ "%03d"%dex_num_ran + '.png'
+            hint_str = hint_str_init(dex_num_ran, optmap['ch'], optmap['en'])
+            e = discord.Embed(title='猜猜我是谁?',colour=0x20DF80)
+            e.set_image(url=image_url)
             e.set_footer(text = hint_str)
             msg_quiz = await client.send_message(message.channel, embed = e)
             start_time = time.time()
@@ -814,13 +886,7 @@ async def on_message(message):
                 now_time = time.time()
                 # change hints at about 15s
                 if now_time-start_time > 15 and not edited:
-                    hint_str = ''
-                    for i in range(len(str(df['chName'][dex_num_ran-1]))):
-                        # give hint on every three characters
-                        if i%3 == 1:
-                            hint_str += str(df['chName'][dex_num_ran-1])[i]+' '
-                        else:
-                            hint_str += '_ '
+                    hint_str = hint_str_update(dex_num_ran, optmap['ch'], optmap['en'])
                     e.set_footer(text = hint_str)
                     await client.edit_message(msg_quiz, embed = e)
                     edited = True
@@ -832,18 +898,19 @@ async def on_message(message):
                     if guess_1.strip() == '$quit':
                         #quit when this round ends
                         quit_game = True
-                    if guess_1.strip().lower() == df['Name'][dex_num_ran-1].lower() or guess_1.strip().lower() == str(df['chName'][dex_num_ran-1]).lower() or guess_1.strip().lower() == str(df['offName'][dex_num_ran-1]).lower():
+                    if check_answer(guess_1, dex_num_ran, optmap['ch'], optmap['en']):
                         scoreboard.setdefault(guess.author,0)
                         scoreboard[guess.author] += 1
                         e_corr = discord.Embed(title=guess.author.name+' 答对了哦～', description ='正确答案:',colour=0x20DF80)
-                        e_corr.set_image(url = dex_str)
-                        e_corr.set_footer(text = df['Name'][dex_num_ran-1].title()+' '+df['chName'][dex_num_ran-1]+'\n')
+                        e_corr.set_image(url = 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/'+ "%03d"%dex_num_ran +'.png')
+                        e_corr.set_footer(text = answer_str(dex_num_ran, optmap['ch'], optmap['en']))
+                        time.sleep(0.5)
                         await client.send_message(message.channel,embed = e_corr)
                         break
             else:
                 e_wrong = discord.Embed(title='time up~', description ='正确答案:',colour=0xFF6347)
-                e_wrong.set_image(url = dex_str)
-                e_wrong.set_footer(text = df['Name'][dex_num_ran-1].title()+' '+df['chName'][dex_num_ran-1]+'\n')
+                e_wrong.set_image(url = 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/'+ "%03d"%dex_num_ran +'.png')
+                e_wrong.set_footer(text = answer_str(dex_num_ran, optmap['ch'], optmap['en']))
                 await client.send_message(message.channel,embed = e_wrong)
             # end the game when some player get 10 pts
             if scoreboard and max(scoreboard.values()) == 10:
