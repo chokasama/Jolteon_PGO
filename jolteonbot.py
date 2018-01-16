@@ -544,8 +544,8 @@ def pokestat(dex_num, weather = 'extreme'):
 
 def movestat(move_number, flag='f', weather = 'extreme'):
     '''form the string consists of pokemon move description'''
-    formatf = 'fast move: %s\ntype: %s\npower: %s\ndps: %s\neps: %s\ntime: %s\n'
-    formatc = 'charge move: %s\ntype: %s\npower: %s\ndps: %s\ndpe: %s\ntime: %s\n'
+    formatf = 'fast move: %s\n中文名: %s\ntype: %s\npower: %s\ndps: %s\neps: %s\ntime: %s\n'
+    formatc = 'charge move: %s\n中文名: %s\ntype: %s\npower: %s\ndps: %s\ndpe: %s\ntime: %s\n'
     
     if flag == 'c':
         data  = dfmc;
@@ -561,6 +561,7 @@ def movestat(move_number, flag='f', weather = 'extreme'):
         return '' #unrecognized move type
     
     name=data['name'][move_number-1].title()
+    name_ch=data['chName'][move_number-1].title()
     type_1=data['type'][move_number-1].title()
     power=data['power'][move_number-1]
     boost_power = str(power)
@@ -577,7 +578,7 @@ def movestat(move_number, flag='f', weather = 'extreme'):
             epsdata = power/(-data['energy'][move_number-1])
             eps = '**%.2f**' % epsdata
     
-    return format_str % (name,type_1,boost_power,dps,eps,time)
+    return format_str % (name,name_ch,type_1,boost_power,dps,eps,time)
 
 def parse_arg(argstr):
     if '+' in argstr:
@@ -726,11 +727,11 @@ async def on_message(message):
         if msg_send == '':
             if dex_num in mega_form:
                 # for pokemon has mega/primal form
-                msg_2 = '这个精灵有超级进化／原始回归形态哦～'
+                msg_2 = '这个精灵有超级进化/原始回归形态哦～\n'
                 if mega_form[dex_num][1]==1:
-                    msg_2 += ' type $0 for normal, $1 for mega/primal'
+                    msg_2 += '输入`$0`查询 普通 形态\n输入`$1`查询 超级进化/原始回归 形态'
                 else:
-                    msg_2 += ' type $0 for normal, $1 for mega X, $2 for mega Y'
+                    msg_2 += '输入`$0`查询 普通 形态\n输入`$1`查询 超级进化X 形态\n输入`$2`查询 超级进化Y 形态'
                 await client.send_message(message.channel, msg_2)
                 msg = await client.wait_for_message(timeout = 30, author = message.author, channel = message.channel)
                 if not msg:
@@ -754,11 +755,14 @@ async def on_message(message):
                     msg_send = "不知道呢 <:huaji:341240709405343745>"
             elif dex_num in diff_form:
                 # for pokemon has more than one form
-                msg_2 = '这个精灵有多种形态哦～ '
+                msg_2 = '这个精灵有多种形态哦～\n'
                 for i in range(diff_form[dex_num][1]):
-                    msg_2 += 'type $'+str(i)+' for '+dfdiff['abbr'][diff_form[dex_num][0]+i]+', '
-                
-                msg_2 = msg_2[:-2]
+                    if dfdiff['chabbr'][diff_form[dex_num][0]+i] != dfdiff['abbr'][diff_form[dex_num][0]+i]:
+                        msg_2 += '输入`$'+str(i)+'`查询 '+dfdiff['chabbr'][diff_form[dex_num][0]+i]+'/'+dfdiff['abbr'][diff_form[dex_num][0]+i]+' 形态\n'
+                    else:
+                        msg_2 += '输入`$'+str(i)+'`查询 '+dfdiff['abbr'][diff_form[dex_num][0]+i]+' 形态\n'
+
+                msg_2 = msg_2[:-1]
                 await client.send_message(message.channel, msg_2)
                 msg = await client.wait_for_message(timeout = 30, author = message.author, channel = message.channel)
                 if not msg:
@@ -777,7 +781,7 @@ async def on_message(message):
                     msg_send = "不知道呢 <:huaji:341240709405343745>"
             elif dex_num in alola_form:
                 # for pokemon has alola form
-                msg_2 = '这个精灵有阿罗拉的样子哦～ type $0 for normal, $1 for alola form'
+                msg_2 = '这个精灵有阿罗拉的样子哦～\n输入`$0`查询 普通 形态\n输入`$1`查询 阿罗拉 的样子'
                 await client.send_message(message.channel, msg_2)
                 msg = await client.wait_for_message(timeout = 30, author = message.author, channel = message.channel)
                 if not msg:
@@ -821,17 +825,15 @@ async def on_message(message):
         input_str = message.content[5:]
         content,weather = parse_arg(input_str)
         for i in range(0,len(dfmf['name'])):
-            if content == str(dfmf['name'][i]):
+            if content == str(dfmf['name'][i]) or content == str(dfmf['chName'][i]):
                 move_number = i+1
                 msg_send=movestat(move_number,'f',weather)
-                #await client.send_message(message.channel,message_out)
                 break
         else:
             for j in range(0,len(dfmc['name'])):
-                if content == str(dfmc['name'][j]):
+                if content == str(dfmc['name'][j]) or content == str(dfmc['chName'][j]):
                     move_number = j+1
                     msg_send = movestat(move_number,'c',weather)
-                    #await client.send_message(message.channel,message_out)
                     break
             else:
                 msg_send = "没见过的技能呢～"
@@ -843,22 +845,22 @@ async def on_message(message):
         if input_str.strip() == '':
             await client.send_message(message.channel,"输入\"$pg 宝可梦名称/编号\"查询pgo中宝可梦的(预测)数据\n输入\"$pgm 技能名称\"查询pgo中技能的数据\n输入\"$game\"看看有什么奇怪的事情发生:see_no_evil:")
         elif input_str.strip().lower() == 'pg':
-            await client.send_message(message.channel,"输入\"$pg 宝可梦名称/编号(+天气)\"查询pgo中宝可梦的(预测)数据,名称可用中英文,天气可省略或使用英文天气")
+            await client.send_message(message.channel,"输入\"$pg 宝可梦名称/编号(+天气)\"查询pgo中宝可梦的(预测)数据，名称可用中英文，天气可省略或使用英文天气")
         elif input_str.strip().lower() == 'pgm':
-            await client.send_message(message.channel,"输入\"$pgm 技能名称/编号(+天气)\"查询pgo中技能数据,名称仅限英文,天气可省略或使用英文天气")
+            await client.send_message(message.channel,"输入\"$pgm 技能名称/编号(+天气)\"查询pgo中技能数据，名称可用中英文，天气可省略或使用英文天气")
         elif input_str.strip().lower() == 'game':
-            await client.send_message(message.channel,"输入\"$game\"开始猜猜我是谁游戏,游戏中不能作弊哦～\n输入\"$quit\"结束当前游戏\n关于选项:\n`-e/--english`: 选择英文版\n`-c/--chinese`: 选择中文版\n`-g/--gen`: 选择题目范围\n`-s/--simple`: 选择以彩图开始游戏")
+            await client.send_message(message.channel,"输入\"$game\"开始猜猜我是谁游戏，游戏中不能作弊哦～\n输入\"$quit\"结束当前游戏\n关于选项:\n`-e/--english`: 选择英文版\n`-c/--chinese`: 选择中文版\n`-g/--gen`: 选择题目范围\n`-s/--simple`: 选择以彩图开始游戏")
 
     elif message.content.startswith('$game'):
         # who am i game
         if game_on.setdefault(message.channel,False):
-            await client.send_message(message.channel,'游戏已开始，请先输入"$quit"结束已有游戏再开始新游戏')
+            await client.send_message(message.channel,'游戏已开始，请先输入`$quit`结束已有游戏再开始新游戏')
             return
         game_on[message.channel] = True
         
         optmap = parse_game_opt(message.content[5:])
         if optmap['msg'] == 'error':
-            await client.send_message(message.channel,"错误的选项：\n`-e/--english`: 选择英文版\n`-c/--chinese`: 选择中文版\n`-g/--gen`: 选择题目范围\n`-s/--simple`: 选择以彩图开始游戏")
+            await client.send_message(message.channel,"错误的选项，请参考以下列表：\n`-e/--english`: 选择英文版\n`-c/--chinese`: 选择中文版\n`-g/--gen`: 选择题目范围\n`-s/--simple`: 选择以彩图开始游戏")
             game_on[message.channel] = False
             return
 
