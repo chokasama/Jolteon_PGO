@@ -323,7 +323,7 @@ def pokestat_diff(dex_num, form_num, weather = 'extreme'):
         maxcp_40 = floor((atk+15)*sqrt(defence+15)*sqrt(hp+15)*pow(cpm_40,2)/10);
         
         name_en = dfdiff['Name'][new_dex].title()
-        name_ch = dfdiff['chName'][new_dex].strip().title()
+        name_ch = dfdiff['chName'][new_dex].title()
         
         move_str = movestr(dex_num, type_p, weather)
         dex_str = dfdiff['url'][new_dex]
@@ -393,17 +393,8 @@ def pokestat_mega(dex_num, form_num, weather = 'extreme'):
         maxcp_35 = floor((atk+15)*sqrt(defence+15)*sqrt(hp+15)*pow(cpm_35,2)/10);
         maxcp_40 = floor((atk+15)*sqrt(defence+15)*sqrt(hp+15)*pow(cpm_40,2)/10);
 
-        if dex_num == 382 or dex_num == 383:
-            name_en = 'Primal '+ df['Name'][dex_num-1].title()
-        elif mega_form[dex_num][1] == 2:
-            name_en = 'Mega '+ df['Name'][dex_num-1].title()+' '+chr(ord('X')+form_num-1)
-        else:
-            name_en = 'Mega '+ df['Name'][dex_num-1].title()
-
-        if dfmega['chName'][new_dex].strip()!='#':
-            name_ch = dfmega['chName'][new_dex]
-        else:
-            name_ch = '超级'+df['offName'][dex_num-1]
+        name_en = dfmega['Name'][new_dex].title()
+        name_ch = dfmega['chName'][new_dex].title()
 
         move_str = movestr(dex_num, type_p, weather)
         dex_str = dfmega['url'][new_dex]
@@ -428,11 +419,11 @@ def pokestat_alola(dex_num, weather = 'extreme'):
     if  dex_num not in alola_form:
         return error_exp
     else:
-        dex_num_new = alola_form.index(dex_num)
-        hp = dfalola['base hp'][dex_num_new]
-        atk = dfalola['base attack'][dex_num_new]
-        defence = dfalola['base defence'][dex_num_new]
-        type_p = dfalola['type'][dex_num_new].split()
+        new_dex = alola_form.index(dex_num)
+        hp = dfalola['base hp'][new_dex]
+        atk = dfalola['base attack'][new_dex]
+        defence = dfalola['base defence'][new_dex]
+        type_p = dfalola['type'][new_dex].split()
         type_p_new = ''
         lvl_boost = False
         color = 0
@@ -461,12 +452,13 @@ def pokestat_alola(dex_num, weather = 'extreme'):
         maxcp_30 = floor((atk+15)*sqrt(defence+15)*sqrt(hp+15)*pow(cpm_30,2)/10);
         maxcp_35 = floor((atk+15)*sqrt(defence+15)*sqrt(hp+15)*pow(cpm_35,2)/10);
         maxcp_40 = floor((atk+15)*sqrt(defence+15)*sqrt(hp+15)*pow(cpm_40,2)/10);
-        name_en = 'Alola '+df['Name'][dex_num-1].title()
-        name_ch = '阿罗拉'+df['chName'][dex_num-1]
+        
+        name_en = dfalola['Name'][new_dex].title()
+        name_ch = dfalola['chName'][new_dex].title()
         # no move avalible for alola form pokemon now...
         #move_str = movestr(dex_num, type_p, weather)
         move_str = ''
-        dex_str = dfalola['url'][dex_num_new]
+        dex_str = dfalola['url'][new_dex]
 
         lvl25_str = ''
         lvl35_str = ''
