@@ -154,6 +154,7 @@ df = pandas.read_excel('national_pokedex.xlsx')
 dfdiff = pandas.read_excel('form_diff.xlsx')
 dfmega = pandas.read_excel('mega_form.xlsx')
 dfalola = pandas.read_excel('alola_form.xlsx')
+dfnick = pandas.read_excel('redirect_list.xlsx')
 
 def isweather(str):
     if str.lower() in weather_boost:
@@ -703,7 +704,12 @@ async def on_message(message):
 
         if content == '':
             msg_send="不知道呢 <:huaji:341240709405343745>"
-
+        else:
+            # redirect nick name to formal name
+            for i in range(len(dfnick['nickName'])):
+                if content == dfnick['nickName'][i].lower():
+                    content = dfnick['Name'][i].lower()
+                    break
 
         if str(content).isdigit():
             dex_num = int(content)
