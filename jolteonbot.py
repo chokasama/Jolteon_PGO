@@ -393,11 +393,12 @@ def pokestat_mega(dex_num, form_num, weather = 'extreme'):
         maxcp_35 = floor((atk+15)*sqrt(defence+15)*sqrt(hp+15)*pow(cpm_35,2)/10);
         maxcp_40 = floor((atk+15)*sqrt(defence+15)*sqrt(hp+15)*pow(cpm_40,2)/10);
 
-        name_en = df['Name'][dex_num-1].title()
-        if dfmega['abbr'][new_dex].strip()!='#':
-            name_en += ' ('+dfmega['abbr'][new_dex].strip().title()+')'
+        if dex_num == 382 or dex_num == 383:
+            name_en = 'Primal '+ df['Name'][dex_num-1].title()
+        elif mega_form[dex_num][1] == 2:
+            name_en = 'Mega '+ df['Name'][dex_num-1].title()+' '+chr(ord('X')+form_num-1)
         else:
-            name_en += ' (Mega)'
+            name_en = 'Mega '+ df['Name'][dex_num-1].title()
 
         if dfmega['chName'][new_dex].strip()!='#':
             name_ch = dfmega['chName'][new_dex]
