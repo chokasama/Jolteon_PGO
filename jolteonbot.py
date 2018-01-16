@@ -716,7 +716,7 @@ async def on_message(message):
                     break
             else:
                 for i in range(len(dfmega['chName'])):
-                    if content == dfmega['Name'][i].lower() or content == str(dfmega['chName'][i]).lower():
+                    if content == dfmega['Name'][i].lower() or content == str(dfmega['chName'][i]).lower() or content == str(dfmega['alterName'][i]).lower():
                         dex_num = int(dfmega['dex number'][i])
                         msg_send,url_str,color = pokestat_mega(dex_num,i-mega_form[dex_num][0]+1,weather)
                         e = discord.Embed(colour = color)
@@ -734,7 +734,7 @@ async def on_message(message):
                             break
                     else:
                         for i in range(len(dfdiff['chName'])):
-                            if content == dfdiff['Name'][i].lower().replace('\xa0','\x20') or content == str(dfdiff['chName'][i]).lower():
+                            if content == dfdiff['Name'][i].lower().replace('\xa0','\x20') or content == str(dfdiff['chName'][i]).lower() or content == str(dfdiff['alterName'][i]).lower() or content == str(dfdiff['offName'][i]).lower():
                                 dex_num = int(dfdiff['dex number'][i])
                                 msg_send,url_str,color = pokestat_diff(dex_num,i-diff_form[dex_num][0],weather)
                                 e = discord.Embed(colour = color)
