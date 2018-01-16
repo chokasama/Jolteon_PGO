@@ -10,6 +10,7 @@ import random
 import time
 import functools
 import getopt
+import codecs
 from math import sqrt, pow, floor
 
 weather_boost = {   "extreme"       : [],
@@ -708,14 +709,42 @@ async def on_message(message):
         if str(content).isdigit():
             dex_num = int(content)
         else:
-            for i in range(0,len(df['chName'])):
+            for i in range(len(df['chName'])):
                 if content == df['Name'][i].lower() or content == str(df['chName'][i]).lower() or content == str(df['offName'][i]).lower() or content == str(df['alterName'][i]).lower():
                     dex_num = int(df['dex number'][i])
                     #message_out=pokestat(dex_number)
                     #await client.send_message(message.channel,message_out)
                     break
             else:
-                msg_send = "不知道呢 <:huaji:341240709405343745>"
+                for i in range(len(dfmega['chName'])):
+                    if content == dfmega['Name'][i].lower() or content == str(dfmega['chName'][i]).lower():
+                        dex_num = int(dfmega['dex number'][i])
+                        msg_send,url_str,color = pokestat_mega(dex_num,i-mega_form[dex_num][0]+1,weather)
+                        e = discord.Embed(colour = color)
+                        e.set_image(url=url_str)
+                        image_exist = True
+                        break
+                else:
+                    for i in range(len(dfalola['chName'])):
+                        if content == dfalola['Name'][i].lower() or content == str(dfalola['chName'][i]).lower():
+                            dex_num = int(dfalola['dex number'][i])
+                            msg_send,url_str,color = pokestat_alola(dex_num,weather)
+                            e = discord.Embed(colour = color)
+                            e.set_image(url=url_str)
+                            image_exist = True
+                            break
+                    else:
+                        for i in range(len(dfdiff['chName'])):
+                            if content == dfdiff['Name'][i].lower().replace('\xa0','\x20') or content == str(dfdiff['chName'][i]).lower():
+                                dex_num = int(dfdiff['dex number'][i])
+                                msg_send,url_str,color = pokestat_diff(dex_num,i-diff_form[dex_num][0],weather)
+                                e = discord.Embed(colour = color)
+                                e.set_image(url=url_str)
+                                image_exist = True
+                                break
+
+                        else:
+                            msg_send = "不知道呢 <:huaji:341240709405343745>"
 
         if msg_send == '':
             if dex_num in mega_form:
