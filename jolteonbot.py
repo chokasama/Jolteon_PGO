@@ -10,7 +10,6 @@ import random
 import time
 import functools
 import getopt
-import codecs
 from math import sqrt, pow, floor
 
 weather_boost = {   "extreme"       : [],
