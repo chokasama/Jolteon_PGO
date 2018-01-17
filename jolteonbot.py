@@ -358,11 +358,7 @@ def pokestat_mega(dex_num, form_num, weather = 'extreme'):
         atk = dfmega['base attack'][new_dex]
         defence = dfmega['base defence'][new_dex]
         
-        # lazy me, '#' represents types same as normal form
-        if dfmega['type'][new_dex].strip()!='#':
-            type_p = dfmega['type'][new_dex].split()
-        else:
-            type_p = df['type'][dex_num-1].split()
+        type_p = dfmega['type'][new_dex].split()
         
         type_p_new = ''
         lvl_boost = False
