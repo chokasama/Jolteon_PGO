@@ -540,6 +540,7 @@ def movestat(move_number, flag='f', weather = 'extreme'):
     '''form the string consists of pokemon move description'''
     formatf = '中文名: %s\ncategory: Fast Move\ntype: %s\npower: %s\ndps: %s\neps: %s\ntime: %s\n'
     formatc = '中文名: %s\ncategory: Charge Move\ntype: %s\npower: %s\ndps: %s\ndpe: %s\ntime: %s\n'
+    error_exp = ['','error',0]
     if flag == 'c':
         data  = dfmc;
         format_str = formatc
@@ -551,7 +552,7 @@ def movestat(move_number, flag='f', weather = 'extreme'):
         eps = data['eps'][move_number-1]
         time = str(data['time'][move_number-1])+'s'
     else:
-        return '' #unrecognized move type
+        return error_exp #unrecognized move type
     
     name = data['name'][move_number-1].title()
     name_ch = data['chName'][move_number-1].title()
