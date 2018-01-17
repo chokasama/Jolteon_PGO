@@ -840,7 +840,7 @@ async def on_message(message):
                     e.set_image(url=url_str)
                     image_exist = True
         if image_exist:
-            e.set_thumbnail(url = 'https://fevgames.net/wp-content/uploads/2016/07/0001.png')
+            e.set_thumbnail(url = 'https://cdn.bulbagarden.net/upload/0/08/Smash_Bros_Pokemon_Symbol.png')
             await client.send_message(message.channel,embed = e)
         else:
             await client.send_message(message.channel,msg_send)
@@ -870,6 +870,7 @@ async def on_message(message):
                 await client.send_message(message.channel,msg_send)
                 return
         e = discord.Embed(title=move_name,description = move_stat, colour = color)
+        e.set_thumbnail(url = 'https://cdn.bulbagarden.net/upload/0/08/Smash_Bros_Pokemon_Symbol.png')
         await client.send_message(message.channel,embed = e)
 
     elif message.content.startswith('$h'):
