@@ -280,9 +280,9 @@ def movestr(dex_num, type_p, weather = 'extreme'):
 
 def pokestat_diff(dex_num, form_num, weather = 'extreme'):
     '''form the string consists of different form pokemon description'''
-    format_str = u'name: %s\n中文名: %s\ntype: %s\nbase hp: %s\nbase att: %s\nbase def: %s\nlv30maxcp: %d\n%slv40maxcp: %d\n孵蛋/raid 参考:\nlv20maxcp: %d\nlv20mincp: %d\n%s%s\n'
+    format_str = '中文名: %s\ntype: %s\nbase hp: %s\nbase att: %s\nbase def: %s\nlv30maxcp: %d\n%slv40maxcp: %d\n孵蛋/raid 参考:\nlv20maxcp: %d\nlv20mincp: %d\n%s%s\n'
     format_25 = '**lv25maxcp: %d**\n**lv25mincp: %d**\n'
-    error_exp = ['error','',0]
+    error_exp = ['','error','',0]
     if dex_num not in diff_form:
         return error_exp
     elif form_num >= diff_form[dex_num][1]:
@@ -337,15 +337,15 @@ def pokestat_diff(dex_num, form_num, weather = 'extreme'):
             lvl25_str = format_25%(maxcp_25,mincp_25)
             lvl35_str = '**lv35maxcp: %d**\n'%maxcp_35
         
-        result = [format_str %(name_en,name_ch,type_p,str(hp),str(atk),str(defence),maxcp_30,lvl35_str, maxcp_40,maxcp_20,mincp_20,lvl25_str,move_str), dex_str, color]
+        result = ['#%03d '%dex_num + name_en, format_str %(name_ch,type_p,str(hp),str(atk),str(defence),maxcp_30,lvl35_str, maxcp_40,maxcp_20,mincp_20,lvl25_str,move_str), dex_str, color]
         return result
 
 
 def pokestat_mega(dex_num, form_num, weather = 'extreme'):
     '''form the string consists of mega pokemon description'''
-    format_str = u'name: %s\n中文名: %s\ntype: %s\nbase hp: %s\nbase att: %s\nbase def: %s\nlv30maxcp: %d\n%slv40maxcp: %d\n孵蛋/raid 参考:\nlv20maxcp: %d\nlv20mincp: %d\n%s%s\n'
+    format_str = '中文名: %s\ntype: %s\nbase hp: %s\nbase att: %s\nbase def: %s\nlv30maxcp: %d\n%slv40maxcp: %d\n孵蛋/raid 参考:\nlv20maxcp: %d\nlv20mincp: %d\n%s%s\n'
     format_25 = '**lv25maxcp: %d**\n**lv25mincp: %d**\n'
-    error_exp = ['error','',0]
+    error_exp = ['','error','',0]
     if dex_num not in mega_form:
         return error_exp
     elif form_num > mega_form[dex_num][1]:
@@ -408,15 +408,15 @@ def pokestat_mega(dex_num, form_num, weather = 'extreme'):
             lvl25_str = format_25%(maxcp_25,mincp_25)
             lvl35_str = '**lv35maxcp: %d**\n'%maxcp_35
 
-        result = [format_str %(name_en,name_ch,type_p,str(hp),str(atk),str(defence),maxcp_30,lvl35_str, maxcp_40,maxcp_20,mincp_20,lvl25_str,move_str), dex_str, color]
+        result = ['#%03d '%dex_num + name_en, format_str %(name_ch,type_p,str(hp),str(atk),str(defence),maxcp_30,lvl35_str, maxcp_40,maxcp_20,mincp_20,lvl25_str,move_str), dex_str, color]
         return result
 
 
 def pokestat_alola(dex_num, weather = 'extreme'):
     '''form the string consists of alola pokemon description'''
-    format_str = u'name: %s\n中文名: %s\ntype: %s\nbase hp: %s\nbase att: %s\nbase def: %s\nlv30maxcp: %d\n%slv40maxcp: %d\n孵蛋/raid 参考:\nlv20maxcp: %d\nlv20mincp: %d\n%s%s\n'
+    format_str = '中文名: %s\ntype: %s\nbase hp: %s\nbase att: %s\nbase def: %s\nlv30maxcp: %d\n%slv40maxcp: %d\n孵蛋/raid 参考:\nlv20maxcp: %d\nlv20mincp: %d\n%s%s\n'
     format_25 = '**lv25maxcp: %d**\n**lv25mincp: %d**\n'
-    error_exp = ['error','',0]
+    error_exp = ['','error','',0]
     if  dex_num not in alola_form:
         return error_exp
     else:
@@ -468,16 +468,16 @@ def pokestat_alola(dex_num, weather = 'extreme'):
         if lvl_boost:
             lvl25_str = format_25%(maxcp_25,mincp_25)
             lvl35_str = '**lv35maxcp: %d**\n'%maxcp_35
-        result = [format_str %(name_en,name_ch,type_p,str(hp),str(atk),str(defence),maxcp_30,lvl35_str, maxcp_40,maxcp_20,mincp_20,lvl25_str,move_str), dex_str, color]
+        result = ['#%03d '%dex_num + name_en, format_str %(name_ch,type_p,str(hp),str(atk),str(defence),maxcp_30,lvl35_str, maxcp_40,maxcp_20,mincp_20,lvl25_str,move_str), dex_str, color]
         return result
 
 
 
 def pokestat(dex_num, weather = 'extreme'):
     '''form the string consists of pokemon description'''
-    format_str = u'name: %s\n中文名: %s\ntype: %s\nbase hp: %s\nbase att: %s\nbase def: %s\nlv30maxcp: %d\n%slv40maxcp: %d\n孵蛋/raid 参考:\nlv20maxcp: %d\nlv20mincp: %d\n%s%s\n'
+    format_str = '中文名: %s\ntype: %s\nbase hp: %s\nbase att: %s\nbase def: %s\nlv30maxcp: %d\n%slv40maxcp: %d\n孵蛋/raid 参考:\nlv20maxcp: %d\nlv20mincp: %d\n%s%s\n'
     format_25 = '**lv25maxcp: %d**\n**lv25mincp: %d**\n'
-    error_exp = ['不知道呢 <:huaji:341240709405343745>','',0]
+    error_exp = ['','不知道呢 <:huaji:341240709405343745>','',0]
     if  dex_num>806:
         return error_exp
     else:
@@ -533,14 +533,13 @@ def pokestat(dex_num, weather = 'extreme'):
         if lvl_boost:
             lvl25_str = format_25%(maxcp_25,mincp_25)
             lvl35_str = '**lv35maxcp: %d**\n'%maxcp_35
-        result = [format_str %(name_en,name_ch,type_p,str(hp),str(atk),str(defence),maxcp_30,lvl35_str, maxcp_40,maxcp_20,mincp_20,lvl25_str,move_str), dex_str, color]
+        result = ['#%03d '%dex_num + name_en, format_str %(name_ch,type_p,str(hp),str(atk),str(defence),maxcp_30,lvl35_str, maxcp_40,maxcp_20,mincp_20,lvl25_str,move_str), dex_str, color]
         return result
 
 def movestat(move_number, flag='f', weather = 'extreme'):
     '''form the string consists of pokemon move description'''
-    formatf = 'fast move: %s\n中文名: %s\ntype: %s\npower: %s\ndps: %s\neps: %s\ntime: %s\n'
-    formatc = 'charge move: %s\n中文名: %s\ntype: %s\npower: %s\ndps: %s\ndpe: %s\ntime: %s\n'
-    
+    formatf = '中文名: %s\ncategory: Fast Move\ntype: %s\npower: %s\ndps: %s\neps: %s\ntime: %s\n'
+    formatc = '中文名: %s\ncategory: Charge Move\ntype: %s\npower: %s\ndps: %s\ndpe: %s\ntime: %s\n'
     if flag == 'c':
         data  = dfmc;
         format_str = formatc
@@ -554,13 +553,14 @@ def movestat(move_number, flag='f', weather = 'extreme'):
     else:
         return '' #unrecognized move type
     
-    name=data['name'][move_number-1].title()
-    name_ch=data['chName'][move_number-1].title()
-    type_1=data['type'][move_number-1].title()
-    power=data['power'][move_number-1]
+    name = data['name'][move_number-1].title()
+    name_ch = data['chName'][move_number-1].title()
+    type_1 = data['type'][move_number-1].title()
+    color = color_map[data['type'][move_number-1].lower()]
+    power = data['power'][move_number-1]
     boost_power = str(power)
-    energy=data['energy'][move_number-1]
-    dps=move_dps_calc(move_number-1,flag,weather)[0]
+    energy = data['energy'][move_number-1]
+    dps = move_dps_calc(move_number-1,flag,weather)[0]
     #weather boost formatting
     if if_boost(weather,type_1):
         type_1 = '**'+type_1+'**'
@@ -572,7 +572,8 @@ def movestat(move_number, flag='f', weather = 'extreme'):
             epsdata = power/(-data['energy'][move_number-1])
             eps = '**%.2f**' % epsdata
     
-    return format_str % (name,name_ch,type_1,boost_power,dps,eps,time)
+    result = [name, format_str % (name_ch,type_1,boost_power,dps,eps,time), color]
+    return result
 
 def parse_arg(argstr):
     if '+' in argstr:
@@ -724,8 +725,8 @@ async def on_message(message):
                 for i in range(len(dfmega['chName'])):
                     if content == dfmega['Name'][i].lower() or content == str(dfmega['chName'][i]).lower() or content == str(dfmega['alterName'][i]).lower():
                         dex_num = int(dfmega['dex number'][i])
-                        msg_send,url_str,color = pokestat_mega(dex_num,i-mega_form[dex_num][0]+1,weather)
-                        e = discord.Embed(colour = color)
+                        name,msg_send,url_str,color = pokestat_mega(dex_num,i-mega_form[dex_num][0]+1,weather)
+                        e = discord.Embed(title = name, description = msg_send, colour = color)
                         e.set_image(url=url_str)
                         image_exist = True
                         break
@@ -733,8 +734,8 @@ async def on_message(message):
                     for i in range(len(dfalola['chName'])):
                         if content == dfalola['Name'][i].lower() or content == str(dfalola['chName'][i]).lower():
                             dex_num = int(dfalola['dex number'][i])
-                            msg_send,url_str,color = pokestat_alola(dex_num,weather)
-                            e = discord.Embed(colour = color)
+                            name,msg_send,url_str,color = pokestat_alola(dex_num,weather)
+                            e = discord.Embed(title = name, description = msg_send, colour = color)
                             e.set_image(url=url_str)
                             image_exist = True
                             break
@@ -742,8 +743,8 @@ async def on_message(message):
                         for i in range(len(dfdiff['chName'])):
                             if content == dfdiff['Name'][i].lower().replace('\xa0','\x20') or content == str(dfdiff['chName'][i]).lower() or content == str(dfdiff['alterName'][i]).lower() or content == str(dfdiff['offName'][i]).lower():
                                 dex_num = int(dfdiff['dex number'][i])
-                                msg_send,url_str,color = pokestat_diff(dex_num,i-diff_form[dex_num][0],weather)
-                                e = discord.Embed(colour = color)
+                                name,msg_send,url_str,color = pokestat_diff(dex_num,i-diff_form[dex_num][0],weather)
+                                e = discord.Embed(title = name, description = msg_send, colour = color)
                                 e.set_image(url=url_str)
                                 image_exist = True
                                 break
@@ -769,13 +770,13 @@ async def on_message(message):
                 if type_d == '':
                     msg_send = "不知道呢 <:huaji:341240709405343745>"
                 elif ord('0')<=ord(type_d[0])<= ord('0')+mega_form[dex_num][1]:
-                    msg_send,url_str,color = pokestat_mega(dex_num,ord(type_d[0])-ord('0'),weather)
-                    e = discord.Embed(colour = color)
+                    name,msg_send,url_str,color = pokestat_mega(dex_num,ord(type_d[0])-ord('0'),weather)
+                    e = discord.Embed(title = name, description = msg_send, colour = color)
                     e.set_image(url=url_str)
                     image_exist = True
                 elif type_d == '-1' and dex_num == 384:
-                    msg_send,url_str,color = pokestat(10,weather)
-                    e = discord.Embed(colour = color)
+                    name,msg_send,url_str,color = pokestat(10,weather)
+                    e = discord.Embed(title = name, description = msg_send, colour = color)
                     e.set_image(url=url_str)
                     image_exist = True
                 else:
@@ -800,9 +801,9 @@ async def on_message(message):
                 if type_d == '':
                     msg_send = "不知道呢 <:huaji:341240709405343745>"
                 elif ord('0')<=ord(type_d[0])<= ord('0')+diff_form[dex_num][1]:
-                    msg_send,url_str,color = pokestat_diff(dex_num,ord(type_d[0])-ord('0'),weather)
-                    e = discord.Embed(colour = color)
-                    e.set_image(url=url_str)
+                    name,msg_send,url_str,color = pokestat_diff(dex_num,ord(type_d[0])-ord('0'),weather)
+                    e = discord.Embed(title = name, description = msg_send, colour = color)
+                    e.set_image(url = url_str)
                     image_exist = True
                 else:
                     msg_send = "不知道呢 <:huaji:341240709405343745>"
@@ -820,25 +821,25 @@ async def on_message(message):
                 if type_d == '':
                     msg_send = "不知道呢 <:huaji:341240709405343745>"
                 elif type_d[0] == '1':
-                    msg_send,url_str,color = pokestat_alola(dex_num,weather)
-                    e = discord.Embed(colour = color)
-                    e.set_image(url=url_str)
+                    name,msg_send,url_str,color = pokestat_alola(dex_num,weather)
+                    e = discord.Embed(title = name, description = msg_send, colour = color)
+                    e.set_image(url = url_str)
                     image_exist = True
                 elif type_d[0] == '0':
-                    msg_send,url_str,color = pokestat(dex_num,weather)
-                    e = discord.Embed(colour = color)
-                    e.set_image(url=url_str)
+                    name,msg_send,url_str,color = pokestat(dex_num,weather)
+                    e = discord.Embed(title = name, description = msg_send, colour = color)
+                    e.set_image(url = url_str)
                     image_exist = True
                 else:
                     msg_send = "不知道呢 <:huaji:341240709405343745>"
             else:
-                msg_send,url_str,color = pokestat(dex_num,weather)
+                name,msg_send,url_str,color = pokestat(dex_num,weather)
                 if url_str != '':
-                    e = discord.Embed(colour = color)
+                    e = discord.Embed(title = name, description = msg_send, colour = color)
                     e.set_image(url=url_str)
                     image_exist = True
         if image_exist:
-            await client.send_message(message.channel,msg_send,embed = e)
+            await client.send_message(message.channel,embed = e)
         else:
             await client.send_message(message.channel,msg_send)
 
@@ -854,17 +855,20 @@ async def on_message(message):
         for i in range(0,len(dfmf['name'])):
             if content == str(dfmf['name'][i]) or content == str(dfmf['chName'][i]):
                 move_number = i+1
-                msg_send=movestat(move_number,'f',weather)
+                move_name, move_stat, color =movestat(move_number,'f',weather)
                 break
         else:
             for j in range(0,len(dfmc['name'])):
                 if content == str(dfmc['name'][j]) or content == str(dfmc['chName'][j]):
                     move_number = j+1
-                    msg_send = movestat(move_number,'c',weather)
+                    move_name, move_stat, color =movestat(move_number,'c',weather)
                     break
             else:
                 msg_send = "没见过的技能呢～"
-        await client.send_message(message.channel,msg_send)
+                await client.send_message(message.channel,msg_send)
+                return
+        e = discord.Embed(title=move_name,description = move_stat, colour = color)
+        await client.send_message(message.channel,embed = e)
 
     elif message.content.startswith('$h'):
         # help
