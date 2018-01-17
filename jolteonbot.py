@@ -840,6 +840,7 @@ async def on_message(message):
                     e.set_image(url=url_str)
                     image_exist = True
         if image_exist:
+            e.set_thumbnail(url = 'https://fevgames.net/wp-content/uploads/2016/07/0001.png')
             await client.send_message(message.channel,embed = e)
         else:
             await client.send_message(message.channel,msg_send)
