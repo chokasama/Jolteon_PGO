@@ -124,6 +124,7 @@ alola_form = [19,
               105]
 
 color_map = {
+    'unknown'   : 0x000000,
     'normal'    : 0xD1D1C4,
     'fire'      : 0xFF4500,
     'water'     : 0x1E90FF,
@@ -193,7 +194,7 @@ def move_dps_calc(move_num, movef = 'c', weather = 'extreme', type_p = 'unknown'
     if if_boost(weather, type_m):
         boost = True
         if dps != 0:
-            dps = float(data['dps'][move_num])*int(int(data['power'][move_num])*1.2)/int(data['power'][move_num])
+            dps = float(data['dps'][move_num])*round(data['power'][move_num]*1.2)/int(data['power'][move_num])
     #stb calc
     if type_m in type_p.lower():
         stb = True
@@ -534,9 +535,9 @@ def pokestat(dex_num, weather = 'extreme'):
 
 def movestat(move_number, flag='f', weather = 'extreme'):
     '''form the string consists of pokemon move description'''
-    formatf = '中文名: %s\ncategory: Fast Move\ntype: %s\npower: %s\ndps: %s\neps: %s\ntime: %s\n'
-    formatc = '中文名: %s\ncategory: Charge Move\ntype: %s\npower: %s\ndps: %s\ndpe: %s\ntime: %s\n'
-    error_exp = ['','error',0]
+    formatf = '中文名: %s\ncategory: Fast Move\ntype: %s\npower: %s\ndps: %s\neps: %s\ntime: %s\n%s'
+    formatc = '中文名: %s\ncategory: Charge Move\ntype: %s\npower: %s\ndps: %s\ndpe: %s\ntime: %s\n%s'
+    error_exp = ['','error','unknown']
     if flag == 'c':
         data  = dfmc;
         format_str = formatc
@@ -547,13 +548,13 @@ def movestat(move_number, flag='f', weather = 'extreme'):
         format_str = formatf
         eps = data['eps'][move_number-1]
         time = str(data['time'][move_number-1])+'s'
+        bar = ''
     else:
         return error_exp #unrecognized move type
     
     name = data['name'][move_number-1].title()
     name_ch = data['chName'][move_number-1].title()
     type_1 = data['type'][move_number-1].title()
-    color = color_map[data['type'][move_number-1].lower()]
     power = data['power'][move_number-1]
     boost_power = str(power)
     energy = data['energy'][move_number-1]
@@ -561,15 +562,22 @@ def movestat(move_number, flag='f', weather = 'extreme'):
     #weather boost formatting
     if if_boost(weather,type_1):
         type_1 = '**'+type_1+'**'
-        boost_power = '**'+boost_power+'+'+str(int(power/5))+'**'
-        power = int(power)+int(power)/5
+        boost_power = '**'+boost_power+'+'+str(round(float(power)/5))+'**'
+        power += round(float(power)/5)
         dps = '**'+dps+'**'
         # dpe can be boosted, too
         if flag == 'c':
-            epsdata = power/(-data['energy'][move_number-1])
+            epsdata = power/float(-data['energy'][move_number-1])
             eps = '**%.2f**' % epsdata
-    
-    result = [name, format_str % (name_ch,type_1,boost_power,dps,eps,time), color]
+    if flag == 'c':
+        if str(data['energy'][move_number-1]) == '-100':
+            bar = chr(9632)*11
+        elif str(data['energy'][move_number-1]) == '-50':
+            bar = chr(9632)*5+ '\t' + chr(9632)*5
+        else:
+            bar = chr(9632)*3+ '\t' + chr(9632)*3 + '\t' + chr(9632)*3
+
+    result = [name, format_str % (name_ch,type_1,boost_power,dps,eps,time,bar), data['type'][move_number-1].lower()]
     return result
 
 def parse_arg(argstr):
@@ -852,19 +860,20 @@ async def on_message(message):
         for i in range(0,len(dfmf['name'])):
             if content == str(dfmf['name'][i]) or content == str(dfmf['chName'][i]):
                 move_number = i+1
-                move_name, move_stat, color =movestat(move_number,'f',weather)
+                move_name, move_stat, type_m =movestat(move_number,'f',weather)
                 break
         else:
             for j in range(0,len(dfmc['name'])):
                 if content == str(dfmc['name'][j]) or content == str(dfmc['chName'][j]):
                     move_number = j+1
-                    move_name, move_stat, color =movestat(move_number,'c',weather)
+                    move_name, move_stat, type_m =movestat(move_number,'c',weather)
                     break
             else:
                 msg_send = "没见过的技能呢～"
                 await client.send_message(message.channel,msg_send)
                 return
-        e = discord.Embed(title=move_name,description = move_stat, colour = color)
+        e = discord.Embed(title=move_name,description = move_stat, colour = color_map[type_m])
+        e.set_thumbnail(url = 'https://raw.githubusercontent.com/apavlinovic/pokemon-go-imagery/master/images/Badge_Type_'+type_m.title()+'_01.png')
         await client.send_message(message.channel,embed = e)
 
     elif message.content.startswith('$h'):
