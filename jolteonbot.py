@@ -890,94 +890,98 @@ async def on_message(message):
 
     elif message.content.startswith('$game'):
         # who am i game
-        if game_on.setdefault(message.channel,False):
-            await client.send_message(message.channel,'游戏已开始，请先输入`$quit`结束已有游戏再开始新游戏')
-            return
-        game_on[message.channel] = True
-        
-        optmap = parse_game_opt(message.content[5:])
-        if optmap['msg'] == 'error':
-            await client.send_message(message.channel,"错误的选项，请参考以下列表：\n`-e/--english`: 选择英文版\n`-c/--chinese`: 选择中文版\n`-g/--gen`: 选择题目范围\n`-s/--simple`: 选择以彩图开始游戏")
-            game_on[message.channel] = False
-            return
+        try:
+            if game_on.setdefault(message.channel,False):
+                await client.send_message(message.channel,'游戏已开始，请先输入`$quit`结束已有游戏再开始新游戏')
+                return
+            game_on[message.channel] = True
+            
+            optmap = parse_game_opt(message.content[5:])
+            if optmap['msg'] == 'error':
+                await client.send_message(message.channel,"错误的选项，请参考以下列表：\n`-e/--english`: 选择英文版\n`-c/--chinese`: 选择中文版\n`-g/--gen`: 选择题目范围\n`-s/--simple`: 选择以彩图开始游戏")
+                game_on[message.channel] = False
+                return
 
-        total = 0
-        scoreboard = {}
-        # maximum rounds = 30
-        while total < 30:
-            time.sleep(2)
-            dex_num_ran = random.randint(1, gen_range[optmap['gen']-1])
-            if  optmap['simple']:
-                image_url = 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/'+ "%03d"%dex_num_ran +'.png'
-            else:
-                image_url = 'https://raw.githubusercontent.com/chokasama/Jolteon_PGO/master/out/'+ "%03d"%dex_num_ran + '.png'
-            hint_str = hint_str_init(dex_num_ran, optmap['ch'], optmap['en'])
-            e = discord.Embed(title='猜猜我是谁?',colour=0x20DF80)
-            e.set_image(url=image_url)
-            e.set_footer(text = hint_str)
-            msg_quiz = await client.send_message(message.channel, embed = e)
-            start_time = time.time()
-            now_time = start_time
-            edited = False
-            quit_game = False
-            # maximum waiting time for one round: 30s
-            while now_time-start_time < 30:
-                now_time = time.time()
-                # change hints at about 15s
-                if now_time-start_time > 15 and not edited:
-                    hint_str = hint_str_update(dex_num_ran, optmap['ch'], optmap['en'])
-                    e.set_footer(text = hint_str)
-                    await client.edit_message(msg_quiz, embed = e)
-                    edited = True
-                guess = await client.wait_for_message(timeout = 2,channel = message.channel)
-                if not guess:
-                    continue
+            total = 0
+            scoreboard = {}
+            # maximum rounds = 30
+            while total < 30:
+                await asyncio.sleep(2)
+                dex_num_ran = random.randint(1, gen_range[optmap['gen']-1])
+                if  optmap['simple']:
+                    image_url = 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/'+ "%03d"%dex_num_ran +'.png'
                 else:
-                    guess_1 = guess.content
-                    if guess_1.strip() == '$quit':
-                        #quit when this round ends
-                        quit_game = True
-                    if check_answer(guess_1, dex_num_ran, optmap['ch'], optmap['en']):
-                        scoreboard.setdefault(guess.author,0)
-                        scoreboard[guess.author] += 1
-                        e_corr = discord.Embed(title=guess.author.name+' 答对了哦～', description ='正确答案:',colour=0x20DF80)
-                        e_corr.set_image(url = 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/'+ "%03d"%dex_num_ran +'.png')
-                        e_corr.set_footer(text = answer_str(dex_num_ran, optmap['ch'], optmap['en']))
-                        time.sleep(0.5)
-                        await client.send_message(message.channel,embed = e_corr)
-                        break
+                    image_url = 'https://raw.githubusercontent.com/chokasama/Jolteon_PGO/master/out/'+ "%03d"%dex_num_ran + '.png'
+                hint_str = hint_str_init(dex_num_ran, optmap['ch'], optmap['en'])
+                e = discord.Embed(title='猜猜我是谁?',colour=0x20DF80)
+                e.set_image(url=image_url)
+                e.set_footer(text = hint_str)
+                msg_quiz = await client.send_message(message.channel, embed = e)
+                start_time = time.time()
+                now_time = start_time
+                edited = False
+                quit_game = False
+                # maximum waiting time for one round: 30s
+                while now_time-start_time < 30:
+                    now_time = time.time()
+                    # change hints at about 15s
+                    if now_time-start_time > 15 and not edited:
+                        hint_str = hint_str_update(dex_num_ran, optmap['ch'], optmap['en'])
+                        e.set_footer(text = hint_str)
+                        await client.edit_message(msg_quiz, embed = e)
+                        edited = True
+                    guess = await client.wait_for_message(timeout = 2,channel = message.channel)
+                    if not guess:
+                        continue
+                    else:
+                        guess_1 = guess.content
+                        if guess_1.strip() == '$quit':
+                            #quit when this round ends
+                            quit_game = True
+                        if check_answer(guess_1, dex_num_ran, optmap['ch'], optmap['en']):
+                            scoreboard.setdefault(guess.author,0)
+                            scoreboard[guess.author] += 1
+                            e_corr = discord.Embed(title=guess.author.name+' 答对了哦～', description ='正确答案:',colour=0x20DF80)
+                            e_corr.set_image(url = 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/'+ "%03d"%dex_num_ran +'.png')
+                            e_corr.set_footer(text = answer_str(dex_num_ran, optmap['ch'], optmap['en']))
+                            await asyncio.sleep(0.5)
+                            await client.send_message(message.channel,embed = e_corr)
+                            break
+                else:
+                    e_wrong = discord.Embed(title='time up~', description ='正确答案:',colour=0xFF6347)
+                    e_wrong.set_image(url = 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/'+ "%03d"%dex_num_ran +'.png')
+                    e_wrong.set_footer(text = answer_str(dex_num_ran, optmap['ch'], optmap['en']))
+                    await client.send_message(message.channel,embed = e_wrong)
+                # end the game when some player get 10 pts
+                if scoreboard and max(scoreboard.values()) == 10:
+                    score_title = 'game over~\n'
+                    break
+                # end the game when '$quit' shows up
+                elif quit_game:
+                    score_title = '游戏中止\n'
+                    break
+                total += 1
             else:
-                e_wrong = discord.Embed(title='time up~', description ='正确答案:',colour=0xFF6347)
-                e_wrong.set_image(url = 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/'+ "%03d"%dex_num_ran +'.png')
-                e_wrong.set_footer(text = answer_str(dex_num_ran, optmap['ch'], optmap['en']))
-                await client.send_message(message.channel,embed = e_wrong)
-            # end the game when some player get 10 pts
-            if scoreboard and max(scoreboard.values()) == 10:
                 score_title = 'game over~\n'
-                break
-            # end the game when '$quit' shows up
-            elif quit_game:
-                score_title = '游戏中止\n'
-                break
-            total += 1
-        else:
-            score_title = 'game over~\n'
-        # compare function for ordering scoreboard
-        def user_compare(user_1,user_2):
-            if scoreboard[user_1]>scoreboard[user_2]:
-                return -1
-            elif scoreboard[user_1]<scoreboard[user_2]:
-                return 1
-            else:
-                return 0
-        users = list(scoreboard.keys())
-        users.sort(key=functools.cmp_to_key(user_compare))
-        scorestr = ''
-        for user in users:
-            scorestr += user.name+': '+str(scoreboard[user])+'\n'
-        e_score = discord.Embed(title=score_title, description =scorestr,colour=0x20DF80)
-        await client.send_message(message.channel,embed = e_score)
-        game_on[message.channel] = False
+            # compare function for ordering scoreboard
+            def user_compare(user_1,user_2):
+                if scoreboard[user_1]>scoreboard[user_2]:
+                    return -1
+                elif scoreboard[user_1]<scoreboard[user_2]:
+                    return 1
+                else:
+                    return 0
+            users = list(scoreboard.keys())
+            users.sort(key=functools.cmp_to_key(user_compare))
+            scorestr = ''
+            for user in users:
+                scorestr += user.name+': '+str(scoreboard[user])+'\n'
+            e_score = discord.Embed(title=score_title, description =scorestr,colour=0x20DF80)
+            await client.send_message(message.channel,embed = e_score)
+            game_on[message.channel] = False
+        except Exception as e:
+            print(e)
+            game_on[message.channel] = False
 
 
 client.run(tokenstr)
