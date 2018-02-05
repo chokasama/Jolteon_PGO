@@ -893,9 +893,9 @@ async def on_message(message):
         if game_on.setdefault(message.channel,False):
             await client.send_message(message.channel,'游戏已开始，请先输入`$quit`结束已有游戏再开始新游戏')
             return
+        
+        game_on[message.channel] = True
         try:
-            game_on[message.channel] = True
-            
             optmap = parse_game_opt(message.content[5:])
             if optmap['msg'] == 'error':
                 await client.send_message(message.channel,"错误的选项，请参考以下列表：\n`-e/--english`: 选择英文版\n`-c/--chinese`: 选择中文版\n`-g/--gen`: 选择题目范围\n`-s/--simple`: 选择以彩图开始游戏")
