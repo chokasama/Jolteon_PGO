@@ -890,10 +890,10 @@ async def on_message(message):
 
     elif message.content.startswith('$game'):
         # who am i game
+        if game_on.setdefault(message.channel,False):
+            await client.send_message(message.channel,'游戏已开始，请先输入`$quit`结束已有游戏再开始新游戏')
+            return
         try:
-            if game_on.setdefault(message.channel,False):
-                await client.send_message(message.channel,'游戏已开始，请先输入`$quit`结束已有游戏再开始新游戏')
-                return
             game_on[message.channel] = True
             
             optmap = parse_game_opt(message.content[5:])
