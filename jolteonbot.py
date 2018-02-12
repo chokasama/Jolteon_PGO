@@ -204,22 +204,25 @@ def move_dps_calc(move_num, movef = 'c', weather = 'extreme', type_p = 'unknown'
     return_val = [dps_string, stb, boost]
     return return_val
 
-def movestr(dex_num, type_p, weather = 'extreme'):
+def movestr(dex_num, type_p, weather = 'extreme', df = df, new_dex = -1):
     '''form the string consists of moves'''
     
     # no move stats avalible for gen 4 or after
     if dex_num > 386:
         return ''
     
-    fast_moves = df['fast move no'][dex_num-1].strip().split(',')
-    charge_moves = df['charge move no'][dex_num-1].strip().split(',')
+    if new_dex == -1:
+        new_dex = dex_num -1
+    
+    fast_moves = df['fast move no'][new_dex].strip().split(',')
+    charge_moves = df['charge move no'][new_dex].strip().split(',')
     legacy_fast = []
     legacy_charge = []
     # detect if legacy move exists
-    if str(df['legacy fast no'][dex_num-1]) != 'nan':
-        legacy_fast = df['legacy fast no'][dex_num-1].strip().split(',')
-    if str(df['legacy charge no'][dex_num-1]) != 'nan':
-        legacy_charge= df['legacy charge no'][dex_num-1].strip().split(',')
+    if str(df['legacy fast no'][new_dex]) != 'nan':
+        legacy_fast = df['legacy fast no'][new_dex].strip().split(',')
+    if str(df['legacy charge no'][new_dex]) != 'nan':
+        legacy_charge= df['legacy charge no'][new_dex].strip().split(',')
 
     fast_moves_str = 'fast move(DPS): '
     charge_moves_str = 'charge move(DPS): '
@@ -327,7 +330,7 @@ def pokestat_diff(dex_num, form_num, weather = 'extreme'):
         name_en = dfdiff['Name'][new_dex].title()
         name_ch = dfdiff['chName'][new_dex].title()
         
-        move_str = movestr(dex_num, type_p, weather)
+        move_str = movestr(dex_num, type_p, weather, df = dfdiff, new_dex = new_dex)
         dex_str = dfdiff['url'][new_dex]
         
         lvl25_str = ''
