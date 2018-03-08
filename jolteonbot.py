@@ -284,7 +284,7 @@ def movestr(dex_num, type_p, weather = 'extreme', df = df, new_dex = -1):
 
 def pokestat_diff(dex_num, form_num, weather = 'extreme'):
     '''form the string consists of different form pokemon description'''
-    format_str = '中文名: %s\ntype: %s\nbase hp: %s\nbase att: %s\nbase def: %s\nlv30maxcp: %d\n%slv40maxcp: %d\n孵蛋/raid 参考:\nlv20maxcp: %d\nlv20mincp: %d\n%s%s\n'
+    format_str = '中文名: %s\ntype: %s%s\nbase hp: %s\nbase att: %s\nbase def: %s\nlv30maxcp: %d\n%slv40maxcp: %d\n孵蛋/raid 参考:\nlv20maxcp: %d\nlv20mincp: %d\n%s%s\n'
     format_25 = '**lv25maxcp: %d**\n**lv25mincp: %d**\n'
     error_exp = ['','error','',0]
     if dex_num not in diff_form:
@@ -301,6 +301,13 @@ def pokestat_diff(dex_num, form_num, weather = 'extreme'):
         type_p_new = ''
         lvl_boost = False
         color = 0
+        
+        #check if cp over 4000
+        hp,atk,defence,nerf = check_nerf(hp,atk,defence)
+        nerf_alert = ''
+        if nerf:
+            nerf_alert = '\n**NERF ALERT**'
+        
         # weather boosted type formatting
         for type_1 in type_p:
             if type_1.strip().lower() != '':
@@ -341,13 +348,13 @@ def pokestat_diff(dex_num, form_num, weather = 'extreme'):
             lvl25_str = format_25%(maxcp_25,mincp_25)
             lvl35_str = '**lv35maxcp: %d**\n'%maxcp_35
         
-        result = ['#%03d '%dex_num + name_en, format_str %(name_ch,type_p,str(hp),str(atk),str(defence),maxcp_30,lvl35_str, maxcp_40,maxcp_20,mincp_20,lvl25_str,move_str), dex_str, color]
+        result = ['#%03d '%dex_num + name_en, format_str %(name_ch,type_p,nerf_alert,str(hp),str(atk),str(defence),maxcp_30,lvl35_str, maxcp_40,maxcp_20,mincp_20,lvl25_str,move_str), dex_str, color]
         return result
 
 
 def pokestat_mega(dex_num, form_num, weather = 'extreme'):
     '''form the string consists of mega pokemon description'''
-    format_str = '中文名: %s\ntype: %s\nbase hp: %s\nbase att: %s\nbase def: %s\nlv30maxcp: %d\n%slv40maxcp: %d\n孵蛋/raid 参考:\nlv20maxcp: %d\nlv20mincp: %d\n%s%s\n'
+    format_str = '中文名: %s\ntype: %s%s\nbase hp: %s\nbase att: %s\nbase def: %s\nlv30maxcp: %d\n%slv40maxcp: %d\n孵蛋/raid 参考:\nlv20maxcp: %d\nlv20mincp: %d\n%s%s\n'
     format_25 = '**lv25maxcp: %d**\n**lv25mincp: %d**\n'
     error_exp = ['','error','',0]
     if dex_num not in mega_form:
@@ -367,6 +374,13 @@ def pokestat_mega(dex_num, form_num, weather = 'extreme'):
         type_p_new = ''
         lvl_boost = False
         color = 0
+        
+        #check if cp over 4000
+        hp,atk,defence,nerf = check_nerf(hp,atk,defence)
+        nerf_alert = ''
+        if nerf:
+            nerf_alert = '\n**NERF ALERT**'
+        
         # weather boosted type formatting
         for type_1 in type_p:
             
@@ -408,7 +422,7 @@ def pokestat_mega(dex_num, form_num, weather = 'extreme'):
             lvl25_str = format_25%(maxcp_25,mincp_25)
             lvl35_str = '**lv35maxcp: %d**\n'%maxcp_35
 
-        result = ['#%03d '%dex_num + name_en, format_str %(name_ch,type_p,str(hp),str(atk),str(defence),maxcp_30,lvl35_str, maxcp_40,maxcp_20,mincp_20,lvl25_str,move_str), dex_str, color]
+        result = ['#%03d '%dex_num + name_en, format_str %(name_ch,type_p,nerf_alert,str(hp),str(atk),str(defence),maxcp_30,lvl35_str, maxcp_40,maxcp_20,mincp_20,lvl25_str,move_str), dex_str, color]
         return result
 
 
@@ -475,7 +489,7 @@ def pokestat_alola(dex_num, weather = 'extreme'):
 
 def pokestat(dex_num, weather = 'extreme'):
     '''form the string consists of pokemon description'''
-    format_str = '中文名: %s\ntype: %s\nbase hp: %s\nbase att: %s\nbase def: %s\nlv30maxcp: %d\n%slv40maxcp: %d\n孵蛋/raid 参考:\nlv20maxcp: %d\nlv20mincp: %d\n%s%s\n'
+    format_str = '中文名: %s\ntype: %s%s\nbase hp: %s\nbase att: %s\nbase def: %s\nlv30maxcp: %d\n%slv40maxcp: %d\n孵蛋/raid 参考:\nlv20maxcp: %d\nlv20mincp: %d\n%s%s\n'
     format_25 = '**lv25maxcp: %d**\n**lv25mincp: %d**\n'
     error_exp = ['','不知道呢 <:huaji:341240709405343745>','',0]
     if  dex_num>806:
@@ -488,6 +502,14 @@ def pokestat(dex_num, weather = 'extreme'):
         type_p_new = ''
         lvl_boost = False
         color = 0
+        
+        #check if cp over 4000
+        nerf_alert = ''
+        if dex_num>386:
+            hp,atk,defence,nerf = check_nerf(hp,atk,defence)
+            if nerf:
+                nerf_alert = '\n**NERF ALERT**'
+        
         #weather boosted type formatting
         for type_1 in type_p:
             
@@ -533,7 +555,7 @@ def pokestat(dex_num, weather = 'extreme'):
         if lvl_boost:
             lvl25_str = format_25%(maxcp_25,mincp_25)
             lvl35_str = '**lv35maxcp: %d**\n'%maxcp_35
-        result = ['#%03d '%dex_num + name_en, format_str %(name_ch,type_p,str(hp),str(atk),str(defence),maxcp_30,lvl35_str, maxcp_40,maxcp_20,mincp_20,lvl25_str,move_str), dex_str, color]
+        result = ['#%03d '%dex_num + name_en, format_str %(name_ch,type_p,nerf_alert,str(hp),str(atk),str(defence),maxcp_30,lvl35_str, maxcp_40,maxcp_20,mincp_20,lvl25_str,move_str), dex_str, color]
         return result
 
 def movestat(move_number, flag='f', weather = 'extreme'):
@@ -582,6 +604,18 @@ def movestat(move_number, flag='f', weather = 'extreme'):
 
     result = [name, format_str % (name_ch,type_1,boost_power,dps,eps,time,bar), data['type'][move_number-1].lower()]
     return result
+
+def check_nerf(hp,atk,defence):
+    '''check if max cp over 4000 (need nerf)'''
+    cpm_40 = 0.790300000000000
+    maxcp_40 = floor((atk+15)*sqrt(defence+15)*sqrt(hp+15)*pow(cpm_40,2)/10);
+    nerf = False
+    if maxcp_40>4000:
+        nerf = True
+        hp = int(round(hp * 0.91))
+        atk = int(round(atk * 0.91))
+        defence = int(round(defence * 0.91))
+    return(hp,atk,defence,nerf)
 
 def parse_arg(argstr):
     if '+' in argstr:
