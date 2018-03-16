@@ -910,7 +910,7 @@ async def on_message(message):
                 await client.send_message(message.channel,msg_send)
                 return
         e = discord.Embed(title=move_name,description = move_stat, colour = color_map[type_m])
-        e.set_thumbnail(url = 'https://raw.githubusercontent.com/apavlinovic/pokemon-go-imagery/master/Sprite/Badge_Type_'+type_m.title()+'_01.png')
+        e.set_thumbnail(url = 'https://raw.githubusercontent.com/chokasama/Jolteon_PGO/master/type_badges/Badge_Type_'+type_m.title()+'_01.png')
         await client.send_message(message.channel,embed = e)
 
     elif message.content.startswith('$h'):
