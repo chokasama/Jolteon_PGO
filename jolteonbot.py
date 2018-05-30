@@ -214,11 +214,15 @@ def movestr(dex_num, type_p, weather = 'extreme', df = df, new_dex = -1):
     if new_dex == -1:
         new_dex = dex_num -1
     
-    fast_moves = df['fast move no'][new_dex].strip().split(',')
-    charge_moves = df['charge move no'][new_dex].strip().split(',')
+    fast_moves = []
+    charge_moves = []
     legacy_fast = []
     legacy_charge = []
-    # detect if legacy move exists
+    # detect if move exists
+    if str(df['fast move no'][new_dex]) != 'nan':
+        fast_moves = df['fast move no'][new_dex].strip().split(',')
+    if str(df['charge move no'][new_dex]) != 'nan':
+        charge_moves = df['charge move no'][new_dex].strip().split(',')
     if str(df['legacy fast no'][new_dex]) != 'nan':
         legacy_fast = df['legacy fast no'][new_dex].strip().split(',')
     if str(df['legacy charge no'][new_dex]) != 'nan':
