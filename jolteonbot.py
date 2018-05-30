@@ -229,29 +229,33 @@ def movestr(dex_num, type_p, weather = 'extreme', df = df, new_dex = -1):
     legacy_fast_str = 'legacy fast(DPS): '
     legacy_charge_str ='legacy charge(DPS): '
 
-    for move in fast_moves:
-        move = move.strip()
-        if move!='':
-            move_num = int(move)
-            move_name = dfmf['name'][move_num]
-            move_stat = move_dps_calc(move_num,'f',weather,type_p)
-            if move_stat[2] == True:
-                fast_moves_str += '**'+move_name.title()+'('+move_stat[0]+')** '
-            else:
-                fast_moves_str += move_name.title()+'('+move_stat[0]+') '
-    fast_moves_str += '\n'
+    if fast_moves != []:
+        for move in fast_moves:
+            move = move.strip()
+            if move!='':
+                move_num = int(move)
+                move_name = dfmf['name'][move_num]
+                move_stat = move_dps_calc(move_num,'f',weather,type_p)
+                if move_stat[2] == True:
+                    fast_moves_str += '**'+move_name.title()+'('+move_stat[0]+')** '
+                else:
+                    fast_moves_str += move_name.title()+'('+move_stat[0]+') '
+        fast_moves_str += '\n'
+    else: fast_moves_str = ''
 
-    for move in charge_moves:
-        move = move.strip()
-        if move!='':
-            move_num = int(move)
-            move_name = dfmc['name'][move_num]
-            move_stat = move_dps_calc(move_num,'c',weather,type_p)
-            if move_stat[2] == True:
-                charge_moves_str += '**'+move_name.title()+'('+move_stat[0]+')** '
-            else:
-                charge_moves_str += move_name.title()+'('+move_stat[0]+') '
-    charge_moves_str += '\n'
+    if charge_moves != []:
+        for move in charge_moves:
+            move = move.strip()
+            if move!='':
+                move_num = int(move)
+                move_name = dfmc['name'][move_num]
+                move_stat = move_dps_calc(move_num,'c',weather,type_p)
+                if move_stat[2] == True:
+                    charge_moves_str += '**'+move_name.title()+'('+move_stat[0]+')** '
+                else:
+                    charge_moves_str += move_name.title()+'('+move_stat[0]+') '
+        charge_moves_str += '\n'
+    else: charge_moves_str = ''
 
     if legacy_fast != []:
         for move in legacy_fast:
@@ -471,8 +475,8 @@ def pokestat_alola(dex_num, weather = 'extreme'):
         name_en = dfalola['Name'][new_dex].title()
         name_ch = dfalola['chName'][new_dex].title()
         # no move avalible for alola form pokemon now...
-        #move_str = movestr(dex_num, type_p, weather)
-        move_str = ''
+        move_str = movestr(dex_num, type_p, weather, df = dfalola, new_dex = new_dex)
+        #move_str = ''
         dex_str = dfalola['url'][new_dex]
 
         lvl25_str = ''
