@@ -500,7 +500,7 @@ def pokestat(dex_num, weather = 'extreme'):
     format_str = '中文名: %s\ntype: %s%s\nbase hp: %s\nbase att: %s\nbase def: %s\nlv30maxcp: %d\n%slv40maxcp: %d\n孵蛋/raid 参考:\nlv20maxcp: %d\nlv20mincp: %d\n%s%s\n'
     format_25 = '**lv25maxcp: %d**\n**lv25mincp: %d**\n'
     error_exp = ['','不知道呢 <:huaji:341240709405343745>','',0]
-    if  dex_num>806:
+    if  dex_num>807:
         return error_exp
     else:
         hp = df['base hp'][dex_num-1]
@@ -555,6 +555,8 @@ def pokestat(dex_num, weather = 'extreme'):
         # form picture url
         dex_str = "%03d"%dex_num
         dex_str = 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/'+dex_str+'.png'
+        if dex_num == 807:
+            dex_str = 'https://media.52poke.com/wiki/a/a7/807Zeraora.png'
 
         lvl25_str = ''
         lvl35_str = ''
