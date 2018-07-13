@@ -784,7 +784,7 @@ async def on_message(message):
                         break
                 else:
                     for i in range(len(dfalola['chName'])):
-                        if content == dfalola['Name'][i].lower() or content == str(dfalola['chName'][i]).lower():
+                        if content == dfalola['Name'][i].lower() or content == str(dfalola['chName'][i]).lower() or content == str(dfalola['alterName'][i]).lower():
                             dex_num = int(dfalola['dex number'][i])
                             name,msg_send,url_str,color = pokestat_alola(dex_num,weather)
                             e = discord.Embed(title = name, description = msg_send, colour = color)
