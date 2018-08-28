@@ -148,6 +148,8 @@ color_map = {
 gen_range = [151,251,386,493,649,721,806]
 
 game_on = {}
+delete_enable = {}
+delete_timelimit = {}
 
 dfmc = pandas.read_excel('charge_moves.xlsx')
 dfmf = pandas.read_excel('fast_moves.xlsx')
@@ -733,6 +735,9 @@ async def on_ready():
     print(client.user.id)
     print('------')
     await client.change_presence(game=discord.Game(name='type $h for help'))
+    for server in client.servers:
+        delete_enable[server] = False
+        delete_timelimit[server] = 180
 
 @client.event
 async def on_message(message):
@@ -740,6 +745,25 @@ async def on_message(message):
     if message.author == client.user:
         return
     
+    if message.content.startswith('$setting '):
+        if not message.author.permissions_in(message.channel).administrator:
+            await client.send_message(message.channel, '抱歉 您并没有权限～<:huaji:341240709405343745>')
+            return
+        input_strs=message.content[9:].split()
+        if input_strs[0]=='enable':
+            delete_enable[message.server] = True
+            await client.send_message(message.channel, '消息定时删除已开启')
+        elif input_strs[0]=='disable':
+            delete_enable[message.server] = False
+            await client.send_message(message.channel, '消息定时删除已关闭')
+        elif input_strs[0]=='limit':
+            if len(input_strs)==2 and input_strs[1].isdigit():
+                delete_timelimit[message.server] = int(input_strs[1])
+                await client.send_message(message.channel, '消息定时删除时长已设置')
+            else:
+                await client.send_message(message.channel, '时长输入有误，请再次尝试')
+    
+
     if message.content.startswith('$pg '):
         # pokemon description search process starts
         
@@ -812,8 +836,10 @@ async def on_message(message):
                     msg_2 += '输入`$0`查询 普通 形态\n输入`$1`查询 超级进化/原始回归 形态'
                 else:
                     msg_2 += '输入`$0`查询 普通 形态\n输入`$1`查询 超级进化X 形态\n输入`$2`查询 超级进化Y 形态'
-                await client.send_message(message.channel, msg_2)
+                send_prompt =  await client.send_message(message.channel, msg_2)
                 msg = await client.wait_for_message(timeout = 30, author = message.author, channel = message.channel)
+                # delete promption command
+                await client.delete_message(send_prompt)
                 if not msg:
                     await client.send_message(message.channel,'不理我？不理你了哦～')
                     return
@@ -843,8 +869,10 @@ async def on_message(message):
                         msg_2 += '输入`$'+str(i)+'`查询 '+dfdiff['abbr'][diff_form[dex_num][0]+i]+' 形态\n'
 
                 msg_2 = msg_2[:-1]
-                await client.send_message(message.channel, msg_2)
+                send_prompt = await client.send_message(message.channel, msg_2)
                 msg = await client.wait_for_message(timeout = 30, author = message.author, channel = message.channel)
+                # delete promption command
+                await client.delete_message(send_prompt)
                 if not msg:
                     await client.send_message(message.channel,'不理我？不理你了哦～')
                     return
@@ -862,8 +890,10 @@ async def on_message(message):
             elif dex_num in alola_form:
                 # for pokemon has alola form
                 msg_2 = '这个精灵有阿罗拉的样子哦～\n输入`$0`查询 普通 形态\n输入`$1`查询 阿罗拉 的样子'
-                await client.send_message(message.channel, msg_2)
+                send_prompt = await client.send_message(message.channel, msg_2)
                 msg = await client.wait_for_message(timeout = 30, author = message.author, channel = message.channel)
+                # delete promption command
+                await client.delete_message(send_prompt)
                 if not msg:
                     await client.send_message(message.channel,'不理我？不理你了哦～')
                     return
@@ -891,7 +921,11 @@ async def on_message(message):
                     e.set_image(url=url_str)
                     image_exist = True
         if image_exist:
-            await client.send_message(message.channel,embed = e)
+            send_embed = await client.send_message(message.channel,embed = e)
+            if delete_enable[message.server]:
+                await asyncio.sleep(delete_timelimit[message.server])
+                # delete embed message
+                await client.delete_message(send_embed)
         else:
             await client.send_message(message.channel,msg_send)
 
@@ -921,7 +955,11 @@ async def on_message(message):
                 return
         e = discord.Embed(title=move_name,description = move_stat, colour = color_map[type_m])
         e.set_thumbnail(url = 'https://raw.githubusercontent.com/chokasama/Jolteon_PGO/master/type_badges/Badge_Type_'+type_m.title()+'_01.png')
-        await client.send_message(message.channel,embed = e)
+        send_embed = await client.send_message(message.channel,embed = e)
+        if delete_enable[message.server]:
+            await asyncio.sleep(delete_timelimit[message.server])
+            # delete embed message
+            await client.delete_message(send_embed)
 
     elif message.content.startswith('$h'):
         # help
