@@ -292,10 +292,31 @@ def movestr(dex_num, type_p, weather = 'extreme', df = df, new_dex = -1):
     else: legacy_charge_str = ''
     return fast_moves_str+charge_moves_str+legacy_fast_str+legacy_charge_str
 
+def cp_calc(atk,defence,hp):
+    '''calculate the reference CP with given data'''
+    cpm_15 = 0.517393950000000
+    cpm_20 = 0.597400010000000
+    cpm_25 = 0.667934000000000
+    cpm_30 = 0.731700000000000
+    cpm_35 = 0.761563840000000
+    cpm_40 = 0.790300000000000
+    mincp_15 = floor((atk+10)*sqrt(defence+10)*sqrt(hp+10)*pow(cpm_15,2)/10);
+    maxcp_15 = floor((atk+15)*sqrt(defence+15)*sqrt(hp+15)*pow(cpm_15,2)/10);
+    mincp_20 = floor((atk+10)*sqrt(defence+10)*sqrt(hp+10)*pow(cpm_20,2)/10);
+    maxcp_20 = floor((atk+15)*sqrt(defence+15)*sqrt(hp+15)*pow(cpm_20,2)/10);
+    mincp_25 = floor((atk+10)*sqrt(defence+10)*sqrt(hp+10)*pow(cpm_25,2)/10);
+    maxcp_25 = floor((atk+15)*sqrt(defence+15)*sqrt(hp+15)*pow(cpm_25,2)/10);
+    maxcp_30 = floor((atk+15)*sqrt(defence+15)*sqrt(hp+15)*pow(cpm_30,2)/10);
+    maxcp_35 = floor((atk+15)*sqrt(defence+15)*sqrt(hp+15)*pow(cpm_35,2)/10);
+    maxcp_40 = floor((atk+15)*sqrt(defence+15)*sqrt(hp+15)*pow(cpm_40,2)/10);
+    return (mincp_15,maxcp_15,mincp_20,maxcp_20,mincp_25,maxcp_25,maxcp_30,maxcp_35,maxcp_40)
+
+
 def pokestat_diff(dex_num, form_num, weather = 'extreme'):
     '''form the string consists of different form pokemon description'''
-    format_str = '中文名: %s\ntype: %s%s\nbase hp: %s\nbase att: %s\nbase def: %s\nlv30maxcp: %d\n%slv40maxcp: %d\n孵蛋/raid 参考:\nlv20maxcp: %d\nlv20mincp: %d\n%s%s\n'
-    format_25 = '**lv25maxcp: %d**\n**lv25mincp: %d**\n'
+    format_str = '中文名: %s\ntype: %s%s\nbase hp: %s\nbase att: %s\nbase def: %s\nlv30maxcp: %d\n%slv40maxcp: %d\nfield research/孵蛋/raid 参考:\n%s\n%s\n'
+    format_unboost = 'lv15/20maxcp: %d/%d\nlv15/20mincp: %d/%d'
+    format_boost = 'lv15/20/**25**maxcp: %d/%d/**%d**\nlv15/20/**25**mincp: %d/%d/**%d**'
     error_exp = ['','error','',0]
     if dex_num not in diff_form:
         return error_exp
@@ -330,19 +351,8 @@ def pokestat_diff(dex_num, form_num, weather = 'extreme'):
                     color = color_map[type_1.strip().lower()]
             else: pass
         type_p = type_p_new
-        
-        cpm_20 = 0.597400010000000
-        cpm_25 = 0.667934000000000
-        cpm_30 = 0.731700000000000
-        cpm_35 = 0.761563840000000
-        cpm_40 = 0.790300000000000
-        mincp_20 = floor((atk+10)*sqrt(defence+10)*sqrt(hp+10)*pow(cpm_20,2)/10);
-        maxcp_20 = floor((atk+15)*sqrt(defence+15)*sqrt(hp+15)*pow(cpm_20,2)/10);
-        mincp_25 = floor((atk+10)*sqrt(defence+10)*sqrt(hp+10)*pow(cpm_25,2)/10);
-        maxcp_25 = floor((atk+15)*sqrt(defence+15)*sqrt(hp+15)*pow(cpm_25,2)/10);
-        maxcp_30 = floor((atk+15)*sqrt(defence+15)*sqrt(hp+15)*pow(cpm_30,2)/10);
-        maxcp_35 = floor((atk+15)*sqrt(defence+15)*sqrt(hp+15)*pow(cpm_35,2)/10);
-        maxcp_40 = floor((atk+15)*sqrt(defence+15)*sqrt(hp+15)*pow(cpm_40,2)/10);
+
+        mincp_15,maxcp_15,mincp_20,maxcp_20,mincp_25,maxcp_25,maxcp_30,maxcp_35,maxcp_40 = cp_calc(atk,defence,hp)
         
         name_en = dfdiff['Name'][new_dex].title()
         name_ch = dfdiff['chName'][new_dex].title()
@@ -350,22 +360,23 @@ def pokestat_diff(dex_num, form_num, weather = 'extreme'):
         move_str = movestr(dex_num, type_p, weather, df = dfdiff, new_dex = new_dex)
         dex_str = dfdiff['url'][new_dex]
         
-        lvl25_str = ''
+        raid_str = format_unboost%(maxcp_15,maxcp_20,mincp_15,mincp_20)
         lvl35_str = ''
         
         # show lvl35 lvl25 stats only when boosted
         if lvl_boost:
-            lvl25_str = format_25%(maxcp_25,mincp_25)
+            raid_str = format_boost%(maxcp_15,maxcp_20,maxcp_25,mincp_15,mincp_20,mincp_25)
             lvl35_str = '**lv35maxcp: %d**\n'%maxcp_35
         
-        result = ['#%03d '%dex_num + name_en, format_str %(name_ch,type_p,nerf_alert,str(hp),str(atk),str(defence),maxcp_30,lvl35_str, maxcp_40,maxcp_20,mincp_20,lvl25_str,move_str), dex_str, color]
+        result = ['#%03d '%dex_num + name_en, format_str %(name_ch,type_p,nerf_alert,str(hp),str(atk),str(defence),maxcp_30,lvl35_str, maxcp_40,raid_str,move_str), dex_str, color]
         return result
 
 
 def pokestat_mega(dex_num, form_num, weather = 'extreme'):
     '''form the string consists of mega pokemon description'''
-    format_str = '中文名: %s\ntype: %s%s\nbase hp: %s\nbase att: %s\nbase def: %s\nlv30maxcp: %d\n%slv40maxcp: %d\n孵蛋/raid 参考:\nlv20maxcp: %d\nlv20mincp: %d\n%s%s\n'
-    format_25 = '**lv25maxcp: %d**\n**lv25mincp: %d**\n'
+    format_str = '中文名: %s\ntype: %s%s\nbase hp: %s\nbase att: %s\nbase def: %s\nlv30maxcp: %d\n%slv40maxcp: %d\nfield research/孵蛋/raid 参考:\n%s\n%s\n'
+    format_unboost = 'lv15/20maxcp: %d/%d\nlv15/20mincp: %d/%d'
+    format_boost = 'lv15/20/**25**maxcp: %d/%d/**%d**\nlv15/20/**25**mincp: %d/%d/**%d**'
     error_exp = ['','error','',0]
     if dex_num not in mega_form:
         return error_exp
@@ -405,18 +416,7 @@ def pokestat_mega(dex_num, form_num, weather = 'extreme'):
             else: pass
         type_p = type_p_new
         
-        cpm_20 = 0.597400010000000
-        cpm_25 = 0.667934000000000
-        cpm_30 = 0.731700000000000
-        cpm_35 = 0.761563840000000
-        cpm_40 = 0.790300000000000
-        mincp_20 = floor((atk+10)*sqrt(defence+10)*sqrt(hp+10)*pow(cpm_20,2)/10);
-        maxcp_20 = floor((atk+15)*sqrt(defence+15)*sqrt(hp+15)*pow(cpm_20,2)/10);
-        mincp_25 = floor((atk+10)*sqrt(defence+10)*sqrt(hp+10)*pow(cpm_25,2)/10);
-        maxcp_25 = floor((atk+15)*sqrt(defence+15)*sqrt(hp+15)*pow(cpm_25,2)/10);
-        maxcp_30 = floor((atk+15)*sqrt(defence+15)*sqrt(hp+15)*pow(cpm_30,2)/10);
-        maxcp_35 = floor((atk+15)*sqrt(defence+15)*sqrt(hp+15)*pow(cpm_35,2)/10);
-        maxcp_40 = floor((atk+15)*sqrt(defence+15)*sqrt(hp+15)*pow(cpm_40,2)/10);
+        mincp_15,maxcp_15,mincp_20,maxcp_20,mincp_25,maxcp_25,maxcp_30,maxcp_35,maxcp_40 = cp_calc(atk,defence,hp)
 
         name_en = dfmega['Name'][new_dex].title()
         name_ch = dfmega['chName'][new_dex].title()
@@ -424,22 +424,23 @@ def pokestat_mega(dex_num, form_num, weather = 'extreme'):
         move_str = movestr(dex_num, type_p, weather)
         dex_str = dfmega['url'][new_dex]
         
-        lvl25_str = ''
+        raid_str = format_unboost%(maxcp_15,maxcp_20,mincp_15,mincp_20)
         lvl35_str = ''
-
+        
         # show lvl35 lvl25 stats only when boosted
         if lvl_boost:
-            lvl25_str = format_25%(maxcp_25,mincp_25)
+            raid_str = format_boost%(maxcp_15,maxcp_20,maxcp_25,mincp_15,mincp_20,mincp_25)
             lvl35_str = '**lv35maxcp: %d**\n'%maxcp_35
-
-        result = ['#%03d '%dex_num + name_en, format_str %(name_ch,type_p,nerf_alert,str(hp),str(atk),str(defence),maxcp_30,lvl35_str, maxcp_40,maxcp_20,mincp_20,lvl25_str,move_str), dex_str, color]
+        
+        result = ['#%03d '%dex_num + name_en, format_str %(name_ch,type_p,nerf_alert,str(hp),str(atk),str(defence),maxcp_30,lvl35_str, maxcp_40,raid_str,move_str), dex_str, color]
         return result
 
 
 def pokestat_alola(dex_num, weather = 'extreme'):
     '''form the string consists of alola pokemon description'''
-    format_str = '中文名: %s\ntype: %s\nbase hp: %s\nbase att: %s\nbase def: %s\nlv30maxcp: %d\n%slv40maxcp: %d\n孵蛋/raid 参考:\nlv20maxcp: %d\nlv20mincp: %d\n%s%s\n'
-    format_25 = '**lv25maxcp: %d**\n**lv25mincp: %d**\n'
+    format_str = '中文名: %s\ntype: %s\nbase hp: %s\nbase att: %s\nbase def: %s\nlv30maxcp: %d\n%slv40maxcp: %d\nfield research/孵蛋/raid 参考:\n%s\n%s\n'
+    format_unboost = 'lv15/20maxcp: %d/%d\nlv15/20mincp: %d/%d'
+    format_boost = 'lv15/20/**25**maxcp: %d/%d/**%d**\nlv15/20/**25**mincp: %d/%d/**%d**'
     error_exp = ['','error','',0]
     if  dex_num not in alola_form:
         return error_exp
@@ -465,18 +466,7 @@ def pokestat_alola(dex_num, weather = 'extreme'):
             else: pass
         type_p = type_p_new
         # cp calculation
-        cpm_20 = 0.597400010000000
-        cpm_25 = 0.667934000000000
-        cpm_30 = 0.731700000000000
-        cpm_35 = 0.761563840000000
-        cpm_40 = 0.790300000000000
-        mincp_20 = floor((atk+10)*sqrt(defence+10)*sqrt(hp+10)*pow(cpm_20,2)/10);
-        maxcp_20 = floor((atk+15)*sqrt(defence+15)*sqrt(hp+15)*pow(cpm_20,2)/10);
-        mincp_25 = floor((atk+10)*sqrt(defence+10)*sqrt(hp+10)*pow(cpm_25,2)/10);
-        maxcp_25 = floor((atk+15)*sqrt(defence+15)*sqrt(hp+15)*pow(cpm_25,2)/10);
-        maxcp_30 = floor((atk+15)*sqrt(defence+15)*sqrt(hp+15)*pow(cpm_30,2)/10);
-        maxcp_35 = floor((atk+15)*sqrt(defence+15)*sqrt(hp+15)*pow(cpm_35,2)/10);
-        maxcp_40 = floor((atk+15)*sqrt(defence+15)*sqrt(hp+15)*pow(cpm_40,2)/10);
+        mincp_15,maxcp_15,mincp_20,maxcp_20,mincp_25,maxcp_25,maxcp_30,maxcp_35,maxcp_40 = cp_calc(atk,defence,hp)
         
         name_en = dfalola['Name'][new_dex].title()
         name_ch = dfalola['chName'][new_dex].title()
@@ -485,22 +475,24 @@ def pokestat_alola(dex_num, weather = 'extreme'):
         #move_str = ''
         dex_str = dfalola['url'][new_dex]
 
-        lvl25_str = ''
+        raid_str = format_unboost%(maxcp_15,maxcp_20,mincp_15,mincp_20)
         lvl35_str = ''
-
+        
         # show lvl35 lvl25 stats only when boosted
         if lvl_boost:
-            lvl25_str = format_25%(maxcp_25,mincp_25)
+            raid_str = format_boost%(maxcp_15,maxcp_20,maxcp_25,mincp_15,mincp_20,mincp_25)
             lvl35_str = '**lv35maxcp: %d**\n'%maxcp_35
-        result = ['#%03d '%dex_num + name_en, format_str %(name_ch,type_p,str(hp),str(atk),str(defence),maxcp_30,lvl35_str, maxcp_40,maxcp_20,mincp_20,lvl25_str,move_str), dex_str, color]
+
+        result = ['#%03d '%dex_num + name_en, format_str %(name_ch,type_p,str(hp),str(atk),str(defence),maxcp_30,lvl35_str,maxcp_40,raid_str,move_str), dex_str, color]
         return result
 
 
 
 def pokestat(dex_num, weather = 'extreme'):
     '''form the string consists of pokemon description'''
-    format_str = '中文名: %s\ntype: %s%s\nbase hp: %s\nbase att: %s\nbase def: %s\nlv30maxcp: %d\n%slv40maxcp: %d\n孵蛋/raid 参考:\nlv20maxcp: %d\nlv20mincp: %d\n%s%s\n'
-    format_25 = '**lv25maxcp: %d**\n**lv25mincp: %d**\n'
+    format_str = '中文名: %s\ntype: %s%s\nbase hp: %s\nbase att: %s\nbase def: %s\nlv30maxcp: %d\n%slv40maxcp: %d\nfield research/孵蛋/raid 参考:\n%s\n%s\n'
+    format_unboost = 'lv15/20maxcp: %d/%d\nlv15/20mincp: %d/%d'
+    format_boost = 'lv15/20/**25**maxcp: %d/%d/**%d**\nlv15/20/**25**mincp: %d/%d/**%d**'
     error_exp = ['','不知道呢 <:huaji:341240709405343745>','',0]
     if  dex_num>807:
         return error_exp
@@ -534,18 +526,8 @@ def pokestat(dex_num, weather = 'extreme'):
             else: pass
         type_p = type_p_new
         # cp calculation
-        cpm_20 = 0.597400010000000
-        cpm_25 = 0.667934000000000
-        cpm_30 = 0.731700000000000
-        cpm_35 = 0.761563840000000
-        cpm_40 = 0.790300000000000
-        mincp_20 = floor((atk+10)*sqrt(defence+10)*sqrt(hp+10)*pow(cpm_20,2)/10);
-        maxcp_20 = floor((atk+15)*sqrt(defence+15)*sqrt(hp+15)*pow(cpm_20,2)/10);
-        mincp_25 = floor((atk+10)*sqrt(defence+10)*sqrt(hp+10)*pow(cpm_25,2)/10);
-        maxcp_25 = floor((atk+15)*sqrt(defence+15)*sqrt(hp+15)*pow(cpm_25,2)/10);
-        maxcp_30 = floor((atk+15)*sqrt(defence+15)*sqrt(hp+15)*pow(cpm_30,2)/10);
-        maxcp_35 = floor((atk+15)*sqrt(defence+15)*sqrt(hp+15)*pow(cpm_35,2)/10);
-        maxcp_40 = floor((atk+15)*sqrt(defence+15)*sqrt(hp+15)*pow(cpm_40,2)/10);
+        mincp_15,maxcp_15,mincp_20,maxcp_20,mincp_25,maxcp_25,maxcp_30,maxcp_35,maxcp_40 = cp_calc(atk,defence,hp)
+
         name_en = df['Name'][dex_num-1].title()
         
         if name_en.strip() == "Farfetch'D":
@@ -560,14 +542,15 @@ def pokestat(dex_num, weather = 'extreme'):
         if dex_num == 807:
             dex_str = 'https://media.52poke.com/wiki/a/a7/807Zeraora.png'
 
-        lvl25_str = ''
+        raid_str = format_unboost%(maxcp_15,maxcp_20,mincp_15,mincp_20)
         lvl35_str = ''
-
+        
         # show lvl35 lvl25 stats only when boosted
         if lvl_boost:
-            lvl25_str = format_25%(maxcp_25,mincp_25)
+            raid_str = format_boost%(maxcp_15,maxcp_20,maxcp_25,mincp_15,mincp_20,mincp_25)
             lvl35_str = '**lv35maxcp: %d**\n'%maxcp_35
-        result = ['#%03d '%dex_num + name_en, format_str %(name_ch,type_p,nerf_alert,str(hp),str(atk),str(defence),maxcp_30,lvl35_str, maxcp_40,maxcp_20,mincp_20,lvl25_str,move_str), dex_str, color]
+
+        result = ['#%03d '%dex_num + name_en, format_str %(name_ch,type_p,nerf_alert,str(hp),str(atk),str(defence),maxcp_30,lvl35_str,maxcp_40,raid_str,move_str), dex_str, color]
         return result
 
 def movestat(move_number, flag='f', weather = 'extreme'):
