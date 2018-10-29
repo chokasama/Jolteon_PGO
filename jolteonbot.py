@@ -209,10 +209,6 @@ def move_dps_calc(move_num, movef = 'c', weather = 'extreme', type_p = 'unknown'
 def movestr(dex_num, type_p, weather = 'extreme', df = df, new_dex = -1):
     '''form the string consists of moves'''
     
-    # no move stats avalible for gen 4 or after
-    if dex_num > 386:
-        return ''
-    
     if new_dex == -1:
         new_dex = dex_num -1
     
