@@ -503,10 +503,9 @@ def pokestat(dex_num, weather = 'extreme'):
         
         #check if cp over 4000
         nerf_alert = ''
-        if dex_num>386:
-            hp,atk,defence,nerf = check_nerf(hp,atk,defence)
-            if nerf:
-                nerf_alert = '\n**NERF ALERT**'
+        hp,atk,defence,nerf = check_nerf(hp,atk,defence)
+        if nerf:
+            nerf_alert = '\n**NERF ALERT**'
         
         #weather boosted type formatting
         for type_1 in type_p:
