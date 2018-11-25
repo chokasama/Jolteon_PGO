@@ -490,7 +490,7 @@ def pokestat(dex_num, weather = 'extreme'):
     format_unboost = 'lv15/20maxcp: %d/%d\nlv15/20mincp: %d/%d'
     format_boost = 'lv15/20/**25**maxcp: %d/%d/**%d**\nlv15/20/**25**mincp: %d/%d/**%d**'
     error_exp = ['','不知道呢 <:huaji:341240709405343745>','',0]
-    if  dex_num>807:
+    if  dex_num>809:
         return error_exp
     else:
         hp = df['base hp'][dex_num-1]
@@ -534,8 +534,10 @@ def pokestat(dex_num, weather = 'extreme'):
         # form picture url
         dex_str = "%03d"%dex_num
         dex_str = 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/'+dex_str+'.png'
-        if dex_num == 807:
-            dex_str = 'https://media.52poke.com/wiki/a/a7/807Zeraora.png'
+        if dex_num == 808:
+            dex_str = 'https://media.52poke.com/wiki/d/d1/808Meltan.png'
+        elif dex_num == 809:
+            dex_str = 'https://media.52poke.com/wiki/e/ea/809Melmetal.png'
 
         raid_str = format_unboost%(maxcp_15,maxcp_20,mincp_15,mincp_20)
         lvl35_str = ''
